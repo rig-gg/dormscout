@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AgentMigrationStateService">
+    <option name="pendingSessionIds">
+      <option value="ad98694c-db8e-401b-8d10-4c289f0b73e3" />
+    </option>
+    <option name="pendingTurns">
+      <map>
+        <entry key="ad98694c-db8e-401b-8d10-4c289f0b73e3">
+          <value>
+            <set>
+              <option value="875d192d-71f3-452f-91a8-67a2cc79fcb4" />
+              <option value="64ad18df-0370-4e74-8cd6-53843e98e9c6" />
+            </set>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <pendingWorkingSetItems>
+      <entry key="ad98694c-db8e-401b-8d10-4c289f0b73e3">
+        <set>
+          <option value="file://$PROJECT_DIR$/src/Dashboard.jsx" />
+          <option value="file://$PROJECT_DIR$/src/components/Listings.jsx" />
+          <option value="file://$PROJECT_DIR$/src/DashboardLandlord.jsx" />
+        </set>
+      </entry>
+    </pendingWorkingSetItems>
+  </component>
+</project>
