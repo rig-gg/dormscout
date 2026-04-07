@@ -218,7 +218,7 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
                   textAlign: 'left',
                   border: 'none',
                   background: activeNav === item.id ? PRIMARY : 'transparent',
-                  color: activeNav === item.id ? '#fff' : '#fff',
+                  color: activeNav === item.id ? '#fff' : colors.text,
                   borderRadius: activeNav === item.id ? '12px' : '0',
                   cursor: 'pointer',
                   fontSize: '14px',
@@ -232,14 +232,14 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
                 }}
                 onMouseEnter={(e) => {
                   if (activeNav !== item.id) {
-                    e.target.style.background = 'rgba(255,255,255,0.1)';
-                    e.target.style.color = '#fff';
+                    e.target.style.background = darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
+                    e.target.style.color = colors.text;
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (activeNav !== item.id) {
                     e.target.style.background = 'transparent';
-                    e.target.style.color = '#fff';
+                    e.target.style.color = colors.text;
                   }
                 }}
               >
