@@ -1,7 +1,6 @@
 import React from 'react';
 
 const SECONDARY = '#5BADA8';
-const PRIMARY = '#E8622E';
 
 export default function Homepage() {
   return (

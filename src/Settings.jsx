@@ -24,6 +24,35 @@ const COLORS = {
   },
 };
 
+const NAV_ITEMS = {
+  landlord: [
+    { id: 'overview', label: 'Overview' },
+    { id: 'map', label: 'Map View' },
+    { id: 'listing', label: 'Listing' },
+    { id: 'messages', label: 'Messages' },
+    { id: 'settings', label: 'Settings' },
+    { id: 'reviews', label: 'Reviews' },
+  ],
+  tenant: [
+    { id: 'overview', label: 'Overview' },
+    { id: 'map', label: 'Map View' },
+    { id: 'booking', label: 'Booking' },
+    { id: 'messages', label: 'Messages' },
+    { id: 'settings', label: 'Settings' },
+    { id: 'reviews', label: 'Reviews' },
+  ],
+};
+
+const ICONS = {
+  overview: '📊',
+  map: '🗺️',
+  listing: '📋',
+  booking: '📅',
+  messages: '💬',
+  settings: '⚙️',
+  reviews: '⭐',
+};
+
 const Toggle = ({ checked, onChange }) => (
   <button
     type="button"
@@ -54,107 +83,60 @@ const Toggle = ({ checked, onChange }) => (
   </button>
 );
 
-export default function SettingsTenant({ onLogout, setScreen, darkMode = false, setDarkMode }) {
+const SettingRow = ({ label, control, colors }) => (
+  <div style={{
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '16px 0',
+    borderBottom: `1px solid ${colors.border}`,
+  }}>
+    <label style={{ fontSize: '14px', color: colors.text, fontWeight: '500', cursor: 'pointer' }}>
+      {label}
+    </label>
+    {control}
+  </div>
+);
+
+const SettingSection = ({ title, children, colors }) => (
+  <div style={{ marginBottom: '32px' }}>
+    <h3 style={{
+      fontSize: '18px',
+      fontWeight: '700',
+      color: colors.text,
+      margin: '0 0 18px 0',
+      paddingBottom: '12px',
+      borderBottom: `3px solid ${PRIMARY}`,
+    }}>
+      {title}
+    </h3>
+    <div style={{ marginTop: '16px' }}>
+      {children}
+    </div>
+  </div>
+);
+
+export default function Settings({ userType = 'tenant', onLogout, setScreen, darkMode = false, setDarkMode }) {
   const colors = darkMode ? COLORS.dark : COLORS.light;
   const [activeNav, setActiveNav] = useState('settings');
 
-  // Notifications
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [inAppNotifications, setInAppNotifications] = useState(true);
   const [messageAlerts, setMessageAlerts] = useState(true);
 
-  // Privacy
   const [showProfile, setShowProfile] = useState(true);
   const [showContact, setShowContact] = useState(true);
 
-  const NavItem = ({ id, label }) => {
-    const icons = {
-      overview: '📊',
-      map: '🗺️',
-      booking: '📅',
-      messages: '💬',
-      settings: '⚙️',
-      reviews: '⭐'
-    };
+  const navItems = NAV_ITEMS[userType] || NAV_ITEMS.tenant;
+  const isLandlord = userType === 'landlord';
 
-    return (
-      <button
-        onClick={() => {
-          if (id === 'settings') {
-            setActiveNav(id);
-          } else {
-            setScreen('dashboard-tenant');
-          }
-        }}
-        style={{
-          width: '100%',
-          padding: '12px 16px',
-          textAlign: 'left',
-          border: 'none',
-          background: activeNav === id ? PRIMARY : 'transparent',
-          color: activeNav === id ? '#fff' : PRIMARY,
-          borderRadius: activeNav === id ? '12px' : '0',
-          cursor: 'pointer',
-          fontSize: '14px',
-          fontWeight: activeNav === id ? '600' : '500',
-          margin: activeNav === id ? '6px' : '0',
-          marginBottom: '4px',
-          transition: 'all 0.25s ease',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-        }}
-        onMouseEnter={(e) => {
-          if (activeNav !== id) {
-            e.target.style.background = '#f5f5f5';
-            e.target.style.color = PRIMARY;
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (activeNav !== id) {
-            e.target.style.background = 'transparent';
-            e.target.style.color = PRIMARY;
-          }
-        }}
-      >
-        <span style={{ fontSize: '16px' }}>{icons[id] || '•'}</span>
-        {label}
-      </button>
-    );
+  const handleNavClick = (id) => {
+    if (id === 'settings') {
+      setActiveNav(id);
+    } else {
+      setScreen(isLandlord ? 'dashboard-landlord' : 'dashboard-tenant');
+    }
   };
-
-  const SettingRow = ({ label, control }) => (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '16px 0',
-      borderBottom: `1px solid ${colors.border}`,
-    }}>
-      <label style={{ fontSize: '14px', color: colors.text, fontWeight: '500', cursor: 'pointer' }}>
-        {label}
-      </label>
-      {control}
-    </div>
-  );
-
-  const SettingSection = ({ title, children }) => (
-    <div style={{ marginBottom: '32px' }}>
-      <h3 style={{
-        fontSize: '18px',
-        fontWeight: '700',
-        color: colors.text,
-        margin: '0 0 18px 0',
-        paddingBottom: '12px',
-        borderBottom: `3px solid ${PRIMARY}`,
-      }}>
-        {title}
-      </h3>
-      <div style={{ marginTop: '16px' }}>
-        {children}
-      </div>
-    </div>
-  );
 
   return (
     <div style={{
@@ -162,7 +144,6 @@ export default function SettingsTenant({ onLogout, setScreen, darkMode = false, 
       minHeight: '100vh',
       paddingTop: '60px',
     }}>
-      {/* Navbar */}
       <nav style={{
         position: 'fixed',
         top: 0,
@@ -209,9 +190,7 @@ export default function SettingsTenant({ onLogout, setScreen, darkMode = false, 
         </div>
       </nav>
 
-      {/* Main Content */}
       <div style={{ padding: '32px 40px', maxWidth: '1400px', margin: '0 auto' }}>
-        {/* Page Title */}
         <div style={{ marginBottom: '28px' }}>
           <h2 style={{
             fontSize: '32px',
@@ -230,9 +209,7 @@ export default function SettingsTenant({ onLogout, setScreen, darkMode = false, 
           </p>
         </div>
 
-        {/* Main Layout */}
         <div style={{ display: 'flex', gap: '24px' }}>
-          {/* Left Sidebar */}
           <div style={{
             width: '280px',
             background: colors.sidebarBg,
@@ -241,15 +218,47 @@ export default function SettingsTenant({ onLogout, setScreen, darkMode = false, 
             height: 'fit-content',
             border: `1px solid ${colors.border}`,
           }}>
-            <NavItem id="overview" label="Overview" />
-            <NavItem id="map" label="Map View" />
-            <NavItem id="booking" label="Booking" />
-            <NavItem id="messages" label="Messages" />
-            <NavItem id="settings" label="Settings" />
-            <NavItem id="reviews" label="Reviews" />
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  textAlign: 'left',
+                  border: 'none',
+                  background: activeNav === item.id ? PRIMARY : 'transparent',
+                  color: activeNav === item.id ? '#fff' : PRIMARY,
+                  borderRadius: activeNav === item.id ? '12px' : '0',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: activeNav === item.id ? '600' : '500',
+                  margin: activeNav === item.id ? '6px' : '0',
+                  marginBottom: '4px',
+                  transition: 'all 0.25s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                }}
+                onMouseEnter={(e) => {
+                  if (activeNav !== item.id) {
+                    e.target.style.background = '#f5f5f5';
+                    e.target.style.color = PRIMARY;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeNav !== item.id) {
+                    e.target.style.background = 'transparent';
+                    e.target.style.color = PRIMARY;
+                  }
+                }}
+              >
+                <span style={{ fontSize: '16px' }}>{ICONS[item.id] || '•'}</span>
+                {item.label}
+              </button>
+            ))}
           </div>
 
-          {/* Right Content */}
           <div style={{
             flex: 1,
             background: colors.cardBg,
@@ -257,44 +266,46 @@ export default function SettingsTenant({ onLogout, setScreen, darkMode = false, 
             padding: '32px',
             border: `1px solid ${colors.border}`,
           }}>
-            {/* Appearance Section */}
-            <SettingSection title="Appearance">
+            <SettingSection title="Appearance" colors={colors}>
               <SettingRow
                 label="Dark Mode"
                 control={<Toggle checked={darkMode} onChange={setDarkMode} />}
+                colors={colors}
               />
             </SettingSection>
 
-            {/* Notifications Section */}
-            <SettingSection title="Notifications">
+            <SettingSection title="Notifications" colors={colors}>
               <SettingRow
                 label="Email Notifications"
                 control={<Toggle checked={emailNotifications} onChange={setEmailNotifications} />}
+                colors={colors}
               />
               <SettingRow
                 label="In-App Notifications"
                 control={<Toggle checked={inAppNotifications} onChange={setInAppNotifications} />}
+                colors={colors}
               />
               <SettingRow
                 label="New Message Alerts"
                 control={<Toggle checked={messageAlerts} onChange={setMessageAlerts} />}
+                colors={colors}
               />
             </SettingSection>
 
-            {/* Privacy Section */}
-            <SettingSection title="Privacy">
+            <SettingSection title="Privacy" colors={colors}>
               <SettingRow
                 label="Show Profile"
                 control={<Toggle checked={showProfile} onChange={setShowProfile} />}
+                colors={colors}
               />
               <SettingRow
                 label="Show Contact Number"
                 control={<Toggle checked={showContact} onChange={setShowContact} />}
+                colors={colors}
               />
             </SettingSection>
 
-            {/* Account Section */}
-            <SettingSection title="Account">
+            <SettingSection title="Account" colors={colors}>
               <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
                 <button
                   style={{
