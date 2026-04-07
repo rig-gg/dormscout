@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Map from './map.jsx';
 
 const PRIMARY = '#E8622E';
 const SECONDARY = '#5BADA8';
@@ -153,8 +154,17 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
           textAlign: 'center',
           lineHeight: '1.1',
         }}>
-          <span style={{ color: PRIMARY }}>Welcome</span>
-          <span style={{ color: SECONDARY }}> Back</span>
+          {activeNav === 'map' ? (
+            <>
+              <span style={{ color: PRIMARY }}>Map</span>
+              <span style={{ color: SECONDARY }}> View</span>
+            </>
+          ) : (
+            <>
+              <span style={{ color: PRIMARY }}>Welcome</span>
+              <span style={{ color: SECONDARY }}> Back</span>
+            </>
+          )}
         </h2>
         {isLandlord && (
           <h3 style={{
@@ -175,16 +185,18 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
             margin: '0 0 8px 0',
             color: colors.text,
           }}>
-            Dashboard
+            {activeNav === 'map' ? 'Map' : 'Dashboard'}
           </h4>
           <p style={{
             fontSize: '14px',
             color: colors.secondaryText,
             margin: 0,
           }}>
-            {isLandlord
-              ? 'See an overview of your current listings, messages, and recent activity.'
-              : 'See an overview of your current bookings, messages, and recent activity.'}
+            {activeNav === 'map'
+              ? 'Search for dorms around Cebu City and find the perfect dorm near campus'
+              : isLandlord
+                ? 'See an overview of your current listings, messages, and recent activity.'
+                : 'See an overview of your current bookings, messages, and recent activity.'}
           </p>
         </div>
 
@@ -238,79 +250,85 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
           </div>
 
           <div style={{ flex: 1 }}>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '20px',
-              marginBottom: '24px',
-            }}>
-              {stats.map((stat) => (
-                <div key={stat.title} style={{
-                  background: colors.cardBg,
-                  borderRadius: '16px',
-                  padding: '24px',
-                  textAlign: stat.align,
-                }}>
-                  <h5 style={{ fontSize: '12px', color: colors.secondaryText, fontWeight: '500', margin: '0 0 12px 0', textTransform: 'uppercase' }}>
-                    {stat.title}
-                  </h5>
-                  <p style={{ fontSize: stat.align === 'center' ? '48px' : '16px', fontWeight: '700', margin: 0, color: stat.align === 'center' ? PRIMARY : colors.text }}>
-                    {stat.value}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: isLandlord ? '1fr 1fr' : '1fr',
-              gap: '20px',
-            }}>
-              {isLandlord && (
+            {activeNav === 'map' ? (
+              <Map darkMode={darkMode} />
+            ) : (
+              <>
                 <div style={{
-                  background: colors.cardBg,
-                  borderRadius: '16px',
-                  padding: '24px',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: '20px',
+                  marginBottom: '24px',
                 }}>
-                  <h5 style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 16px 0', color: colors.text }}>Current Listings</h5>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    {LISTINGS.map((listing, idx) => (
-                      <div key={idx} style={{
-                        padding: '12px',
-                        background: darkMode ? '#0f3460' : '#f9f9f9',
-                        borderRadius: '8px',
-                        fontSize: '13px',
-                        color: colors.text,
-                      }}>
-                        {listing}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div style={{
-                background: colors.cardBg,
-                borderRadius: '16px',
-                padding: '24px',
-              }}>
-                <h5 style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 16px 0', color: colors.text }}>Recent Messages</h5>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {MESSAGES.map((msg, idx) => (
-                    <div key={idx} style={{
-                      padding: '12px',
-                      background: darkMode ? '#0f3460' : '#f9f9f9',
-                      borderRadius: '8px',
-                      fontSize: '13px',
-                      color: colors.text,
+                  {stats.map((stat) => (
+                    <div key={stat.title} style={{
+                      background: colors.cardBg,
+                      borderRadius: '16px',
+                      padding: '24px',
+                      textAlign: stat.align,
                     }}>
-                      <div style={{ fontWeight: '600', color: colors.text }}>{msg.name}</div>
-                      <div style={{ fontSize: '12px', color: colors.secondaryText }}>{msg.property}</div>
+                      <h5 style={{ fontSize: '12px', color: colors.secondaryText, fontWeight: '500', margin: '0 0 12px 0', textTransform: 'uppercase' }}>
+                        {stat.title}
+                      </h5>
+                      <p style={{ fontSize: stat.align === 'center' ? '48px' : '16px', fontWeight: '700', margin: 0, color: stat.align === 'center' ? PRIMARY : colors.text }}>
+                        {stat.value}
+                      </p>
                     </div>
                   ))}
                 </div>
-              </div>
-            </div>
+
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: isLandlord ? '1fr 1fr' : '1fr',
+                  gap: '20px',
+                }}>
+                  {isLandlord && (
+                    <div style={{
+                      background: colors.cardBg,
+                      borderRadius: '16px',
+                      padding: '24px',
+                    }}>
+                      <h5 style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 16px 0', color: colors.text }}>Current Listings</h5>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        {LISTINGS.map((listing, idx) => (
+                          <div key={idx} style={{
+                            padding: '12px',
+                            background: darkMode ? '#0f3460' : '#f9f9f9',
+                            borderRadius: '8px',
+                            fontSize: '13px',
+                            color: colors.text,
+                          }}>
+                            {listing}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div style={{
+                    background: colors.cardBg,
+                    borderRadius: '16px',
+                    padding: '24px',
+                  }}>
+                    <h5 style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 16px 0', color: colors.text }}>Recent Messages</h5>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      {MESSAGES.map((msg, idx) => (
+                        <div key={idx} style={{
+                          padding: '12px',
+                          background: darkMode ? '#0f3460' : '#f9f9f9',
+                          borderRadius: '8px',
+                          fontSize: '13px',
+                          color: colors.text,
+                        }}>
+                          <div style={{ fontWeight: '600', color: colors.text }}>{msg.name}</div>
+                          <div style={{ fontSize: '12px', color: colors.secondaryText }}>{msg.property}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
