@@ -5,6 +5,7 @@ import Login from './login.jsx';
 import Register from './register.jsx';
 import Dashboard from './Dashboard.jsx';
 import Settings from './Settings.jsx';
+import ForgotPassword from './ForgotPassword.jsx';
 
 function App() {
   const [screen, setScreen] = useState('home');
@@ -26,7 +27,7 @@ function App() {
             Login
           </button>
         )}
-        {(screen === 'login' || screen === 'register') && (
+        {(screen === 'login' || screen === 'register' || screen === 'forgot-password') && (
           <button onClick={() => setScreen('home')} className="primary-btn">
             Back to Main Menu
           </button>
@@ -64,6 +65,7 @@ function App() {
     'dashboard-tenant': <Dashboard userType="tenant" onLogout={() => setScreen('home')} setScreen={setScreen} darkMode={darkMode} />,
     'settings-landlord': <Settings userType="landlord" onLogout={() => setScreen('home')} setScreen={setScreen} darkMode={darkMode} setDarkMode={setDarkMode} />,
     'settings-tenant': <Settings userType="tenant" onLogout={() => setScreen('home')} setScreen={setScreen} darkMode={darkMode} setDarkMode={setDarkMode} />,
+    'forgot-password': <ForgotPassword setScreen={setScreen} />,
   };
 
   return (

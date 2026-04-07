@@ -76,7 +76,7 @@ export default function Login({ setScreen }) {
           <div style={{ textAlign: 'right', marginTop: '-8px', marginBottom: '12px' }}>
             <button
               type="button"
-              onClick={() => {/* Forgot password handler */}}
+              onClick={() => setScreen('forgot-password')}
               style={{
                 fontSize: '12px',
                 color: PRIMARY,
