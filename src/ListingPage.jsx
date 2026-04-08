@@ -4,7 +4,7 @@ import Listings from './components/Listings';
 export default function ListingPage({ darkMode = false }) {
   return (
     <div>
-      <Listings mode="board" />
+      <Listings mode="board" darkMode={darkMode} />
     </div>
   );
 }

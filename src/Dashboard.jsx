@@ -223,7 +223,7 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
                   textAlign: 'left',
                   border: 'none',
                   background: activeNav === item.id ? PRIMARY : 'transparent',
-                  color: activeNav === item.id ? '#fff' : PRIMARY, // inactive should be PRIMARY so it's readable
+                  color: activeNav === item.id ? '#fff' : (darkMode ? '#fff' : PRIMARY),
                   borderRadius: activeNav === item.id ? '12px' : '0',
                   cursor: 'pointer',
                   fontSize: '14px',
@@ -236,16 +236,15 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
                   gap: '10px',
                 }}
                 onMouseEnter={(e) => {
-                  // On hover, if not active, give a subtle highlight and keep text readable
                   if (activeNav !== item.id) {
-                    e.currentTarget.style.background = '#f5f5f5';
-                    e.currentTarget.style.color = PRIMARY;
+                    e.currentTarget.style.background = darkMode ? '#1a1a4a' : '#f5f5f5';
+                    e.currentTarget.style.color = darkMode ? '#fff' : PRIMARY;
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (activeNav !== item.id) {
                     e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = PRIMARY;
+                    e.currentTarget.style.color = darkMode ? '#fff' : PRIMARY;
                   }
                 }}
               >

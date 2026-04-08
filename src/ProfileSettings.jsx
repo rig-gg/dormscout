@@ -143,6 +143,23 @@ export default function ProfileSettings({ role = 'tenant', onLogout, setScreen, 
   const [yearLevel, setYearLevel] = useState('');
   const [studentId, setStudentId] = useState('');
 
+  const schools = [
+    'Cebu Institute of Technology - University',
+    'Cebu Normal University',
+    'Cebu Technological University',
+    'Saint Theresa\'s College',
+    'Southwestern University PHINMA',
+    'University of Cebu - Banilad',
+    'University of Cebu - Main',
+    'University of Cebu - METC',
+    'University of the Philippines Cebu',
+    'University of San Carlos - Downtown',
+    'University of San Carlos - Talamban',
+    'University of San Jose-Recoletos - Basak',
+    'University of San Jose-Recoletos - Main',
+    'University of the Visayas',
+  ];
+
   // Landlord: business info
   const [businessPermit, setBusinessPermit] = useState('');
 
@@ -378,7 +395,33 @@ export default function ProfileSettings({ role = 'tenant', onLogout, setScreen, 
             {!isLandlord ? (
               <Section title="Student Information" colors={colors}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-                  <InputField label="University" value={university} onChange={setUniversity} placeholder="University of San Carlos" colors={colors} />
+                  <div style={{ marginBottom: '14px' }}>
+                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: colors.secondaryText, marginBottom: '6px' }}>
+                      University
+                    </label>
+                    <select
+                      value={university}
+                      onChange={(e) => setUniversity(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        borderRadius: '8px',
+                        border: `1px solid ${colors.border}`,
+                        fontSize: '14px',
+                        color: colors.text,
+                        background: colors.inputBg,
+                        outline: 'none',
+                        boxSizing: 'border-box',
+                        height: '42px',
+                        fontFamily: 'inherit',
+                      }}
+                    >
+                      <option value="">Select Your School</option>
+                      {schools.map((s) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
                   <InputField label="Course" value={course} onChange={setCourse} placeholder="BS Computer Science" colors={colors} />
                   <InputField label="Year Level" value={yearLevel} onChange={setYearLevel} placeholder="3rd Year" colors={colors} />
                   <InputField label="Student ID" value={studentId} onChange={setStudentId} placeholder="21-0000-000" colors={colors} />
