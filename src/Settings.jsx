@@ -159,17 +159,21 @@ export default function Settings({ userType = 'tenant', onLogout, setScreen, dar
       }}>
         <h1 style={{ fontSize: '24px', fontWeight: '700', margin: 0, color: colors.text }}>DormScout</h1>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            background: '#9370DB',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#fff',
-            fontSize: '18px',
-          }}>
+          <div
+            onClick={() => setScreen(isLandlord ? 'profile-landlord' : 'profile-tenant')}
+            style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              background: '#9370DB',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#fff',
+              fontSize: '18px',
+              cursor: 'pointer',
+            }}
+          >
             👤
           </div>
           <button

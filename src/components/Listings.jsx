@@ -5,7 +5,6 @@ import 'leaflet/dist/leaflet.css';
 
 // --- Constants ---
 const PRIMARY = '#E8622E';
-const SECONDARY = '#5BADA8';
 const STORAGE_KEY = 'dormscout_listings';
 
 // Fix for default marker icon missing in some setups
@@ -24,11 +23,12 @@ function SmallMap({ lat, lng }) {
   const mapRef = useRef(null);
 
   useEffect(() => {
-    if (!mapRef.current) return;
+    const node = mapRef.current;
+    if (!node) return;
 
     // Initialize map if not already initialized
-    if (!mapRef.current._leaflet_id) {
-      const map = L.map(mapRef.current, {
+    if (!node._leaflet_id) {
+      const map = L.map(node, {
         center: [lat || 0, lng || 0],
         zoom: 14,
         zoomControl: false, // Hide zoom buttons for cleaner look
@@ -42,8 +42,8 @@ function SmallMap({ lat, lng }) {
 
     // Cleanup
     return () => {
-      if (mapRef.current && mapRef.current._leaflet_id) {
-        mapRef.current.remove(); // Destroy map instance on unmount
+      if (node && node._leaflet_id) {
+        node.remove(); // Destroy map instance on unmount
       }
     };
   }, [lat, lng]);
@@ -213,7 +213,7 @@ export default function Listings({ mode = 'manage' }) {
         markerRef.current = null;
       }
     };
-  }, [viewMode]); // Re-run if viewMode changes to re-initialize map
+  }, [viewMode, form.lat, form.lng]); // Re-run if viewMode changes to re-initialize map
 
   // --- Handlers ---
 

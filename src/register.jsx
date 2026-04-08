@@ -7,7 +7,22 @@ export default function Register({ setScreen }) {
   const [userType, setUserType] = useState('tenant');
   const [school, setSchool] = useState('');
 
-  const schools = ['USC - Talamban', 'CIT', 'UC - Main', 'CNU'];
+  const schools = [
+    'Cebu Institute of Technology - University',
+    'Cebu Normal University',
+    'Cebu Technological University',
+    'Saint Theresa\'s College',
+    'Southwestern University PHINMA',
+    'University of Cebu - Banilad',
+    'University of Cebu - Main',
+    'University of Cebu - METC',
+    'University of the Philippines Cebu',
+    'University of San Carlos - Downtown',
+    'University of San Carlos - Talamban',
+    'University of San Jose-Recoletos - Basak',
+    'University of San Jose-Recoletos - Main',
+    'University of the Visayas',
+  ];
   const registerFields = [
     { name: 'name', placeholder: 'Full Name', type: 'text' },
     { name: 'email', placeholder: 'Email', type: 'email' },

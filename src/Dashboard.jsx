@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Map from './map.jsx';
-import Listings from './components/Listings';
+import ListingPage from './ListingPage';
 
 const PRIMARY = '#E8622E';
 const SECONDARY = '#5BADA8';
@@ -58,12 +58,6 @@ const STATS = {
   ],
 };
 
-const LISTINGS = [
-  'Sunshine Boarding House',
-  'BlueSky Apartments',
-  'Casa Mariposa',
-];
-
 const MESSAGES = [
   { name: 'LeBron James', property: 'Sunshine Boarding House' },
   { name: 'Steph Curry', property: 'Sunshine Boarding House' },
@@ -87,40 +81,6 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
   const stats = STATS[userType] || STATS.tenant;
   const isLandlord = userType === 'landlord';
 
-  // Live listings synced from localStorage / Listings component
-  const [currentListings, setCurrentListings] = useState([]);
-
-  useEffect(() => {
-    function loadFromStorage() {
-      try {
-        const raw = localStorage.getItem('dormscout_listings');
-        if (raw) setCurrentListings(JSON.parse(raw));
-        else {
-          // seed dashboard with fallback LISTINGS and persist so Listings component sees it too
-          setCurrentListings(LISTINGS);
-          try {
-            localStorage.setItem('dormscout_listings', JSON.stringify(LISTINGS));
-          } catch (e) {
-            // ignore storage errors
-          }
-        }
-      } catch (e) {
-        console.error('Failed to load listings in Dashboard', e);
-        setCurrentListings([]);
-      }
-    }
-
-    loadFromStorage();
-
-    const handler = (e) => {
-      if (e && e.detail) setCurrentListings(e.detail);
-      else loadFromStorage();
-    };
-
-    window.addEventListener('dormscout:listingsUpdated', handler);
-    return () => window.removeEventListener('dormscout:listingsUpdated', handler);
-  }, []);
-
   const handleNavClick = (id) => {
     if (id === 'settings') {
       setScreen(isLandlord ? 'settings-landlord' : 'settings-tenant');
@@ -129,9 +89,7 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
     }
   };
 
-  // If landlord, replace All Listings stat value with live count
-  const listingCount = (currentListings && currentListings.length > 0) ? currentListings.length : LISTINGS.length;
-  const statsToRender = stats.map((s) => (isLandlord && s.title === 'All Listings' ? { ...s, value: String(listingCount) } : s));
+  const statsToRender = stats;
 
   return (
     <div style={{
@@ -154,17 +112,21 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
       }}>
         <h1 style={{ fontSize: '24px', fontWeight: '700', margin: 0, color: colors.text }}>DormScout</h1>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            background: '#9370DB',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#fff',
-            fontSize: '18px',
-          }}>
+          <div
+            onClick={() => setScreen(isLandlord ? 'profile-landlord' : 'profile-tenant')}
+            style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              background: '#9370DB',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#fff',
+              fontSize: '18px',
+              cursor: 'pointer',
+            }}
+          >
             👤
           </div>
           <button
@@ -198,6 +160,8 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
               <span style={{ color: PRIMARY }}>Map</span>
               <span style={{ color: SECONDARY }}> View</span>
             </>
+          ) : activeNav === 'listing' ? (
+            <span style={{ color: PRIMARY }}>Listings</span>
           ) : (
             <>
               <span style={{ color: PRIMARY }}>Welcome</span>
@@ -205,7 +169,7 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
             </>
           )}
         </h2>
-        {isLandlord && (
+        {isLandlord && activeNav !== 'listing' && (
           <h3 style={{
             fontSize: '36px',
             fontWeight: '700',
@@ -224,7 +188,7 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
             margin: '0 0 8px 0',
             color: colors.text,
           }}>
-            {activeNav === 'map' ? 'Map' : 'Dashboard'}
+            {activeNav === 'map' ? 'Map' : activeNav === 'listing' ? 'Listing' : 'Dashboard'}
           </h4>
           <p style={{
             fontSize: '14px',
@@ -233,9 +197,11 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
           }}>
             {activeNav === 'map'
               ? 'Search for dorms around Cebu City and find the perfect dorm near campus'
-              : isLandlord
-                ? 'See an overview of your current listings, messages, and recent activity.'
-                : 'See an overview of your current bookings, messages, and recent activity.'}
+              : activeNav === 'listing'
+                ? 'Create or delete your listing.'
+                : isLandlord
+                  ? 'See an overview of your current listings, messages, and recent activity.'
+                  : 'See an overview of your current bookings, messages, and recent activity.'}
           </p>
         </div>
 
@@ -293,10 +259,7 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
             {activeNav === 'map' ? (
               <Map darkMode={darkMode} />
             ) : activeNav === 'listing' && isLandlord ? (
-              // If landlord selected the Listing nav, show the Listings board as the main content only
-              <div style={{ marginTop: 24 }}>
-                <Listings mode="board" />
-              </div>
+              <ListingPage darkMode={darkMode} />
             ) : (
               <>
                 <div style={{
@@ -327,28 +290,6 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
                   gridTemplateColumns: isLandlord ? '1fr 1fr' : '1fr',
                   gap: '20px',
                 }}>
-                  {isLandlord && (
-                    <div style={{
-                      background: colors.cardBg,
-                      borderRadius: '16px',
-                      padding: '24px',
-                    }}>
-                      <h5 style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 16px 0', color: colors.text }}>Current Listings</h5>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        {(currentListings && currentListings.length > 0 ? currentListings : LISTINGS).map((listing, idx) => (
-                          <div key={listing.id || idx} style={{
-                            padding: '12px',
-                            background: darkMode ? '#0f3460' : '#f9f9f9',
-                            borderRadius: '8px',
-                            fontSize: '13px',
-                            color: colors.text,
-                          }}>
-                            {typeof listing === 'string' ? listing : listing.title}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
 
                   <div style={{
                     background: colors.cardBg,
