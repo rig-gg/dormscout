@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Map from './map.jsx';
 import ListingPage from './ListingPage';
 import BookingPage from './BookingPage';
+import Reviews from './Reviews.jsx';
 
 const PRIMARY = '#E8622E';
 const SECONDARY = '#5BADA8';
@@ -108,12 +109,12 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
   }, [showDropdown]);
 
   const handleNavClick = (id) => {
-    if (id === 'settings') {
-      setScreen(isLandlord ? 'settings-landlord' : 'settings-tenant');
-    } else {
-      setActiveNav(id);
-    }
-  };
+  if (id === 'settings') {
+    setScreen(isLandlord ? 'settings-landlord' : 'settings-tenant');
+  } else {
+    setActiveNav(id);  
+  }
+};
 
   const statsToRender = stats;
 
@@ -414,6 +415,8 @@ export default function Dashboard({ userType = 'tenant', onLogout, setScreen, da
               <ListingPage darkMode={darkMode} />
             ) : activeNav === 'booking' && !isLandlord ? (
                 <BookingPage darkMode={darkMode} />
+            ) : activeNav === 'reviews' ? (
+                <Reviews userType={userType} />
             ) : (
               <>
                 <div style={{

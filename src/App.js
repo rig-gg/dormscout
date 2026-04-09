@@ -9,6 +9,7 @@ import ForgotPassword from './ForgotPassword.jsx';
 import Support from './Support.jsx';
 import AboutUs from './AboutUs.jsx';
 import ProfilePage from './ProfilePage.jsx';
+import Reviews from './Reviews.jsx';
 
 function App() {
   const [screen, setScreen] = useState('home');
@@ -57,6 +58,11 @@ function App() {
             Back to Main Menu
           </button>
         )}
+        {(screen === 'reviews-tenant' || screen === 'reviews-landlord') && (
+          <button onClick={() => setScreen('home')} className="primary-btn">
+          Back to Main Menu
+          </button>
+        )}
       </div>
     </header>
   );
@@ -75,6 +81,8 @@ function App() {
     'forgot-password': <ForgotPassword setScreen={setScreen} />,
     'support': <Support darkMode={darkMode} onBack={() => setScreen(dashboardType === 'landlord' ? 'dashboard-landlord' : 'dashboard-tenant')} />,
     'about-us': <AboutUs darkMode={darkMode} onBack={() => setScreen(dashboardType === 'landlord' ? 'dashboard-landlord' : 'dashboard-tenant')} setScreen={setScreen} />,
+    'reviews-tenant': <Reviews userType="tenant" />,
+    'reviews-landlord': <Reviews userType="landlord" />,
   };
 
   return (
