@@ -390,22 +390,58 @@ export default function Map({ darkMode = false, userType = 'tenant'}) {
               </div>
 
               {userType === 'tenant' ? (
-                <button
-                  onClick={() => handleBook(selectedListing)}
-                  style={{
-                    width: '100%',
-                    padding: '14px',
-                    background: PRIMARY,
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '12px',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Book This Property
-                </button>
+                <>
+                  <button
+                    onClick={() => handleBook(selectedListing)}
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      background: PRIMARY,
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      marginBottom: '10px'
+                    }}
+                  >
+                    Book This Property
+                  </button>
+                  <button
+                    onClick={() => alert('Contact landlord functionality coming soon!')}
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      background: SECONDARY,
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      marginBottom: '12px'
+                    }}
+                  >
+                    Contact Landlord
+                  </button>
+                  <button
+                    onClick={() => alert('Report functionality coming soon!')}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#ef4444',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      padding: '10px 0',
+                      width: '100%',
+                      textAlign: 'center'
+                    }}
+                  >
+                    Report Listing
+                  </button>
+                </>
               ) : (
                 <button
                   onClick={() => setSelectedListing(null)}

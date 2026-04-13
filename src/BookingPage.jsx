@@ -272,11 +272,11 @@ export default function BookingPage({ darkMode = false }) {
                   Cancel Booking
                 </button>
                 <button
-                  onClick={() => setSelectedBooking(null)}
+                  onClick={() => alert('Contact landlord functionality coming soon!')}
                   style={{
                     flex: 1,
                     padding: '12px',
-                    background: PRIMARY,
+                    background: '#5BADA8',
                     border: 'none',
                     color: '#fff',
                     borderRadius: '8px',
@@ -285,7 +285,7 @@ export default function BookingPage({ darkMode = false }) {
                     fontSize: '14px'
                   }}
                 >
-                  Close
+                  Contact Landlord
                 </button>
               </div>
             </div>
