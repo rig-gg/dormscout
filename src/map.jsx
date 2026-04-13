@@ -65,6 +65,9 @@ const UNIVERSITIES = [
   { name: 'Southwestern University PHINMA', abbr: 'SWU', coords: [10.303344727301218, 123.89140215600317] },
   { name: 'Cebu Technological University', abbr: 'CTU', coords: [10.297444457685753, 123.90659062522744] },
   { name: 'Saint Theresa\'s College', abbr: 'STC', coords: [10.3127944559912, 123.89601129648001] },
+  { name: 'Asian College of Technology', abbr: 'ACT', coords: [10.298830349299022, 123.89590624741045] },
+
+
 ];
 
 export default function Map({ darkMode = false, userType = 'tenant'}) {
