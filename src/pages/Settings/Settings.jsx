@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 const PRIMARY = '#E8622E';
 
@@ -91,6 +92,7 @@ const InputField = ({ label, type = 'text', value, onChange, placeholder, colors
 );
 
 export default function Settings({ userType = 'tenant', darkMode = false, setDarkMode }) {
+  const [searchParams] = useSearchParams();
   const dk = darkMode;
   const colors = {
     cardBg: dk ? '#16213e' : '#fff',
@@ -103,7 +105,9 @@ export default function Settings({ userType = 'tenant', darkMode = false, setDar
 
   const isLandlord = userType === 'landlord';
 
-  const [activeSettingTab, setActiveSettingTab] = useState('profile');
+  // Set initial tab from URL query parameter, default to 'profile'
+  const tabFromUrl = searchParams.get('tab') || 'profile';
+  const [activeSettingTab, setActiveSettingTab] = useState(tabFromUrl);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');

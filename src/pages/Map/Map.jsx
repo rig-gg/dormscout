@@ -70,7 +70,39 @@ const UNIVERSITIES = [
 
 ];
 
-export default function Map({ darkMode = false, userType = 'tenant'}) {
+// Helper function to calculate distance between two coordinates (in km)
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius of the earth in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+  return distance;
+}
+
+// Helper function to find nearest university
+function getNearestUniversity(lat, lng) {
+  if (!lat || !lng) return null;
+  
+  let nearest = null;
+  let minDistance = Infinity;
+  
+  UNIVERSITIES.forEach((uni) => {
+    const distance = getDistanceFromLatLonInKm(lat, lng, uni.coords[0], uni.coords[1]);
+    if (distance < minDistance) {
+      minDistance = distance;
+      nearest = { ...uni, distance };
+    }
+  });
+  
+  return nearest;
+}
+
+export default function Map({ darkMode = false, userType = 'tenant', onEditListing }) {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
   const markersRef = useRef([]);
@@ -380,7 +412,9 @@ export default function Map({ darkMode = false, userType = 'tenant'}) {
                 <div style={{ gridColumn: '1 / -1' }}>
                   <p style={{ margin: 0, fontSize: '12px', color: c.secondaryText }}>Nearby University</p>
                   <p style={{ margin: '4px 0 0 0', fontSize: '16px', fontWeight: '600', color: c.text }}>
-                    {selectedListing.university || 'Not specified'}
+                    {getNearestUniversity(selectedListing.lat, selectedListing.lng) 
+                      ? `${getNearestUniversity(selectedListing.lat, selectedListing.lng).name} (${getNearestUniversity(selectedListing.lat, selectedListing.lng).distance.toFixed(2)} km)`
+                      : 'Location not set'}
                   </p>
                 </div>
               </div>
@@ -446,22 +480,51 @@ export default function Map({ darkMode = false, userType = 'tenant'}) {
                   </button>
                 </>
               ) : (
-                <button
-                  onClick={() => setSelectedListing(null)}
-                  style={{
-                    width: '100%',
-                    padding: '14px',
-                    background: '#6c757d', // Gray color for landlord
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '12px',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Close Details
-                </button>
+                <>
+                  <button
+                    onClick={() => {
+                      if (onEditListing) onEditListing(selectedListing);
+                      setSelectedListing(null);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      background: PRIMARY,
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      marginBottom: '10px'
+                    }}
+                  >
+                    ✏️ Edit Listing
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (window.confirm('Delete this listing?')) {
+                        const newListings = listings.filter((l) => l.id !== selectedListing.id);
+                        localStorage.setItem('dormscout_listings', JSON.stringify(newListings));
+                        setListings(newListings);
+                        setSelectedListing(null);
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      background: '#dc3545',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    🗑️ Delete Listing
+                  </button>
+                </>
               )}
             </div>
           </div>

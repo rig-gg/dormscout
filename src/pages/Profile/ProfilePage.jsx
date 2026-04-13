@@ -144,7 +144,7 @@ export default function ProfilePage({ role, darkMode, setDarkMode }) {
               </div>
               <div
                 onClick={() => {
-                  navigate('/settings');
+                  navigate('/dashboard?section=settings');
                   setShowDropdown(false);
                 }}
                 style={{

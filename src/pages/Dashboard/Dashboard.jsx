@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Map from '../Map/Map';
 import ListingPage from '../Listing/ListingPage';
 import BookingPage from '../Booking/BookingPage';
@@ -80,8 +80,11 @@ const ICONS = {
 };
 
 export default function Dashboard({ userType = 'tenant', darkMode = false, setDarkMode }) {
+  const [searchParams] = useSearchParams();
   const colors = darkMode ? COLORS.dark : COLORS.light;
-  const [activeNav, setActiveNav] = useState('overview');
+  const sectionFromUrl = searchParams.get('section') || 'overview';
+  const [activeNav, setActiveNav] = useState(sectionFromUrl);
+  const [editListingData, setEditListingData] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const navItems = NAV_ITEMS[userType] || NAV_ITEMS.tenant;
   const stats = STATS[userType] || STATS.tenant;
@@ -387,9 +390,9 @@ export default function Dashboard({ userType = 'tenant', darkMode = false, setDa
 
           <div style={{ flex: 1 }}>
             {activeNav === 'map' ? (
-              <Map darkMode={darkMode} userType={userType} />
+              <Map darkMode={darkMode} userType={userType} onEditListing={(listing) => { setEditListingData(listing); setActiveNav('listing'); }} />
             ) : activeNav === 'listing' && isLandlord ? (
-              <ListingPage darkMode={darkMode} />
+              <ListingPage darkMode={darkMode} editListingData={editListingData} onEditHandled={() => setEditListingData(null)} />
             ) : activeNav === 'booking' && !isLandlord ? (
               <BookingPage darkMode={darkMode} />
             ) : activeNav === 'reviews' ? (

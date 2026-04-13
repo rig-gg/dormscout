@@ -15,6 +15,51 @@ const defaultIcon = L.icon({
   iconAnchor: [12, 41],
 });
 
+const BLUE = '#2563EB';
+
+function makeBlueLabel(abbr) {
+  const parts = abbr.split(/[-\s]+/);
+  const isMultiLine = parts.length > 1 && abbr.length > 5;
+  const fontSize = abbr.length > 6 ? 7 : abbr.length > 4 ? 8 : 9;
+  let textHtml;
+  if (isMultiLine) {
+    const line1 = parts[0];
+    const line2 = parts.slice(1).join(' ');
+    textHtml = `<text x="22" y="18" text-anchor="middle" fill="#fff" font-size="${fontSize}" font-weight="700" font-family="sans-serif">${line1}</text>
+      <text x="22" y="${18 + fontSize + 1}" text-anchor="middle" fill="#fff" font-size="${fontSize}" font-weight="700" font-family="sans-serif">${line2}</text>`;
+  } else {
+    textHtml = `<text x="22" y="24" text-anchor="middle" fill="#fff" font-size="${fontSize}" font-weight="700" font-family="sans-serif">${abbr}</text>`;
+  }
+  return L.divIcon({
+    className: '',
+    html: `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="56" viewBox="0 0 44 56">
+      <path d="M22 0C9.85 0 0 9.85 0 22c0 15.4 22 34 22 34s22-18.6 22-34C44 9.85 34.15 0 22 0z" fill="${BLUE}"/>
+      ${textHtml}
+    </svg>`,
+    iconSize: [44, 56],
+    iconAnchor: [22, 56],
+    popupAnchor: [0, -56],
+  });
+}
+
+const UNIVERSITIES = [
+  { name: 'Cebu Institute of Technology - University', abbr: 'CIT', coords: [10.29457049495325, 123.8810696234642] },
+  { name: 'University of San Carlos - Downtown', abbr: 'USC-DC', coords: [10.299533411273078, 123.89894228028311] },
+  { name: 'University of the Visayas', abbr: 'UV', coords: [10.298701521575332, 123.90136409833146] },
+  { name: 'University of Cebu - Main', abbr: 'UC Main', coords: [10.29859134168097, 123.89769041976133] },
+  { name: 'University of San Carlos - Talamban', abbr: 'USC-TC', coords: [10.352530648303398, 123.91257785415208] },
+  { name: 'University of Cebu - Banilad', abbr: 'UC Banilad', coords: [10.338903100091237, 123.91192294436264] },
+  { name: 'University of Cebu - METC', abbr: 'UC METC', coords: [10.287151042846553, 123.87788175785442] },
+  { name: 'University of San Jose-Recoletos - Main', abbr: 'USJR Main', coords: [10.294176444197102, 123.89750739647967] },
+  { name: 'University of San Jose-Recoletos - Basak', abbr: 'USJR Basak', coords: [10.290123577674795, 123.8624596247838] },
+  { name: 'Cebu Normal University', abbr: 'CNU', coords: [10.301911563323149, 123.8962597988632] },
+  { name: 'University of the Philippines Cebu', abbr: 'UP', coords: [10.32250556542723, 123.89824335176846] },
+  { name: 'Southwestern University PHINMA', abbr: 'SWU', coords: [10.303344727301218, 123.89140215600317] },
+  { name: 'Cebu Technological University', abbr: 'CTU', coords: [10.297444457685753, 123.90659062522744] },
+  { name: 'Saint Theresa\'s College', abbr: 'STC', coords: [10.3127944559912, 123.89601129648001] },
+  { name: 'Asian College of Technology', abbr: 'ACT', coords: [10.298830349299022, 123.89590624741045] },
+];
+
 // --- Helper Components ---
 function SmallMap({ lat, lng }) {
   const mapRef = useRef(null);
@@ -63,7 +108,7 @@ const filesToDataUrls = (files) => {
 };
 
 // --- Main Component ---
-export default function ListingPage({ mode = 'board', darkMode = false }) {
+export default function ListingPage({ mode = 'board', darkMode = false, editListingData, onEditHandled }) {
   // --- State ---
   const [listings, setListings] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -88,6 +133,15 @@ export default function ListingPage({ mode = 'board', darkMode = false }) {
   // --- Effects ---
 
   useEffect(() => { setViewMode(mode); }, [mode]);
+
+  // Handle edit from Map view
+  useEffect(() => {
+    if (editListingData) {
+      startEdit(editListingData);
+      if (onEditHandled) onEditHandled();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editListingData]);
 
   // 1. LOAD DATA FROM LOCAL STORAGE (Only runs once on mount)
   useEffect(() => {
@@ -120,11 +174,6 @@ export default function ListingPage({ mode = 'board', darkMode = false }) {
     if (!mapContainerRef.current) return;
 
     if (mapInstanceRef.current) {
-      if (form.lat && form.lng) {
-        mapInstanceRef.current.setView([form.lat, form.lng], 15);
-        if (markerRef.current) markerRef.current.setLatLng([form.lat, form.lng]);
-        else markerRef.current = L.marker([form.lat, form.lng], { icon: defaultIcon }).addTo(mapInstanceRef.current);
-      }
       return;
     }
 
@@ -133,15 +182,35 @@ export default function ListingPage({ mode = 'board', darkMode = false }) {
     const map = L.map(mapContainerRef.current, { center: [centerLat, centerLng], zoom: 13 });
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
     if (form.lat && form.lng) markerRef.current = L.marker([form.lat, form.lng], { icon: defaultIcon }).addTo(map);
+    // Add university markers
+    UNIVERSITIES.forEach((uni) => {
+      const marker = L.marker(uni.coords, { icon: makeBlueLabel(uni.abbr) }).addTo(map);
+      marker.bindPopup(`<b>${uni.name}</b>`);
+    });
+
     map.on('click', (e) => {
       const { lat, lng } = e.latlng;
+      if (lat < CEBU_BOUNDS.minLat || lat > CEBU_BOUNDS.maxLat || lng < CEBU_BOUNDS.minLng || lng > CEBU_BOUNDS.maxLng) {
+        alert('Please pin a location within Cebu City only.');
+        return;
+      }
       setForm(f => ({ ...f, lat, lng }));
       if (markerRef.current) markerRef.current.setLatLng(e.latlng);
       else markerRef.current = L.marker(e.latlng, { icon: defaultIcon }).addTo(map);
+      // Reverse geocode to get address
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.display_name) {
+            setForm(f => ({ ...f, address: data.display_name }));
+          }
+        })
+        .catch(() => {});
     });
     mapInstanceRef.current = map;
     return () => { if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null; markerRef.current = null; } };
-  }, [viewMode, form.lat, form.lng]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewMode]);
 
   // --- Handlers ---
 
@@ -179,10 +248,7 @@ export default function ListingPage({ mode = 'board', darkMode = false }) {
     setForm((f) => ({ ...f, images: imgs }));
   }
 
-  function handleManualCoordChange(field, value) {
-    const num = parseFloat(value);
-    setForm(f => ({ ...f, [field]: isNaN(num) ? '' : num }));
-  }
+  const CEBU_BOUNDS = { minLat: 10.25, maxLat: 10.45, minLng: 123.82, maxLng: 123.95 };
 
   // Helper to save to LocalStorage
   const saveToStorage = (newListings) => {
@@ -264,7 +330,7 @@ export default function ListingPage({ mode = 'board', darkMode = false }) {
                 {listings.map((l) => {
                   const selected = selectedId === l.id;
                   return (
-                    <div key={l.id} style={{ background: c.cardBg, border: selected ? `2px solid ${PRIMARY}` : `1px solid ${c.border}`, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', position: 'relative' }}>
+                    <div key={l.id} style={{ background: c.cardBg, border: selected ? `2px solid ${PRIMARY}` : `1px solid ${c.border}`, borderRadius: 12, overflow: 'visible', cursor: 'pointer', position: 'relative', zIndex: selected ? 20 : 1 }}>
                       <button 
                         onClick={(e) => { e.stopPropagation(); startEdit(l); }}
                         style={{
@@ -279,7 +345,7 @@ export default function ListingPage({ mode = 'board', darkMode = false }) {
                           cursor: 'pointer',
                           fontSize: 14,
                           fontWeight: 600,
-                          zIndex: 10,
+                          zIndex: 100,
                           display: 'flex',
                           alignItems: 'center',
                           gap: 4,
@@ -292,7 +358,7 @@ export default function ListingPage({ mode = 'board', darkMode = false }) {
                       </button>
                       <div onClick={() => setSelectedId(l.id)}>
                         {l.images && l.images.length > 0 ? (
-                          <div style={{ height: 140, width: '100%', position: 'relative' }}>
+                          <div style={{ height: 140, width: '100%', position: 'relative', overflow: 'hidden', borderRadius: '12px 12px 0 0' }}>
                             <img
                               src={l.images[0]}
                               alt={l.title}
@@ -300,7 +366,7 @@ export default function ListingPage({ mode = 'board', darkMode = false }) {
                             />
                           </div>
                         ) : l.lat && l.lng ? (
-                          <div style={{ height: 140, width: '100%' }}>
+                          <div style={{ height: 140, width: '100%', overflow: 'hidden', position: 'relative', zIndex: 0, borderRadius: '12px 12px 0 0' }}>
                             <SmallMap lat={l.lat} lng={l.lng} />
                           </div>
                         ) : (
@@ -336,13 +402,11 @@ export default function ListingPage({ mode = 'board', darkMode = false }) {
                 <div><input value={form.price} onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))} placeholder="Price (e.g., 3500)" style={{ height: 44, padding: '8px 12px', borderRadius: 8, width: '100%', border: '1px solid #ccc', background: c.inputBg, color: c.text }} />{errors.price && <div style={{ color: 'crimson', fontSize: 13, marginTop: 6 }}>{errors.price}</div>}</div>
               </div>
               <div style={{ marginTop: 12 }}><input value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} placeholder="Address / Location Name" style={{ height: 44, padding: '8px 12px', borderRadius: 8, width: '100%', border: '1px solid #ccc', background: c.inputBg, color: c.text }} /></div>
-              <div style={{ marginTop: 12 }}><input value={form.university} onChange={(e) => setForm((f) => ({ ...f, university: e.target.value }))} placeholder="Nearby University (e.g., USC Main)" style={{ height: 44, padding: '8px 12px', borderRadius: 8, width: '100%', border: '1px solid #ccc', background: c.inputBg, color: c.text }} /></div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
-                <input type="number" step="any" value={form.lat || ''} onChange={(e) => handleManualCoordChange('lat', e.target.value)} placeholder="Latitude" style={{ height: 44, padding: '8px 12px', borderRadius: 8, width: '100%', border: '1px solid #ccc', background: c.inputBg, color: c.text }} />
-                <input type="number" step="any" value={form.lng || ''} onChange={(e) => handleManualCoordChange('lng', e.target.value)} placeholder="Longitude" style={{ height: 44, padding: '8px 12px', borderRadius: 8, width: '100%', border: '1px solid #ccc', background: c.inputBg, color: c.text }} />
-              </div>
               <div style={{ marginTop: 12, height: 300, width: '100%', borderRadius: 12, overflow: 'hidden', border: '1px solid #ccc' }}><div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} /></div>
-              <p style={{ fontSize: 12, color: c.secondaryText, marginTop: 4 }}>Click on the map to pin the location.</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
+                <p style={{ fontSize: 12, color: c.secondaryText, margin: 0 }}>Click on the map to pin the location.</p>
+                <span style={{ fontSize: 12, fontWeight: 700, color: '#dc3545', background: '#dc354515', padding: '4px 10px', borderRadius: 6 }}>⚠️ Cebu City Only</span>
+              </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
                 <div><input value={form.rooms} onChange={(e) => setForm((f) => ({ ...f, rooms: e.target.value }))} placeholder="Room types" style={{ height: 44, padding: '8px 12px', borderRadius: 8, width: '100%', border: '1px solid #ccc', background: c.inputBg, color: c.text }} /></div>
                 <div>
@@ -376,7 +440,7 @@ export default function ListingPage({ mode = 'board', darkMode = false }) {
           <ul style={{ marginTop: 8, paddingLeft: 18, color: c.secondaryText }}>
             <li>Use a clear title.</li>
             <li>Include price/rooms.</li>
-            <li>Add the nearby University.</li>
+            <li>Nearby university auto-detected.</li>
             <li>Pin location on map.</li>
           </ul>
         </div>

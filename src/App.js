@@ -53,9 +53,12 @@ function App() {
     </header>
   );
 
+  const pagesWithOwnNav = ['/dashboard', '/profile', '/support', '/about', '/settings', '/reviews'];
+  const hideGlobalHeader = pagesWithOwnNav.includes(location.pathname);
+
   return (
     <div className="app-shell">
-      <Header />
+      {!hideGlobalHeader && <Header />}
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/login" element={<Login setUserType={setUserType} />} />
