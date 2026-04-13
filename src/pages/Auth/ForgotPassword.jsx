@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const PRIMARY = '#E8622E';
 const SECONDARY = '#5BADA8';
 
-export default function ForgotPassword({ setScreen }) {
+export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,7 +31,7 @@ export default function ForgotPassword({ setScreen }) {
             <button
               type="button"
               className="primary-btn"
-              onClick={() => setScreen('login')}
+              onClick={() => navigate('/login')}
               style={{ marginTop: '14px' }}
             >
               Back to Login
@@ -58,7 +60,7 @@ export default function ForgotPassword({ setScreen }) {
 
         <div style={{ textAlign: 'center', marginTop: '16px' }}>
           <button
-            onClick={() => setScreen('login')}
+            onClick={() => navigate('/login')}
             style={{
               background: 'none',
               border: 'none',

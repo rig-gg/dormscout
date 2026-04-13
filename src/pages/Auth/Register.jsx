@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const PRIMARY = '#E8622E';
 const SECONDARY = '#5BADA8';
 
-export default function Register({ setScreen }) {
-  const [userType, setUserType] = useState('tenant');
+export default function Register({ setUserType }) {
+  const [userType, setUserTypeLocal] = useState('tenant');
   const [school, setSchool] = useState('');
+  const navigate = useNavigate();
 
   const schools = [
     'Cebu Institute of Technology - University',
@@ -23,6 +25,7 @@ export default function Register({ setScreen }) {
     'University of San Jose-Recoletos - Main',
     'University of the Visayas',
   ];
+
   const registerFields = [
     { name: 'name', placeholder: 'Full Name', type: 'text' },
     { name: 'email', placeholder: 'Email', type: 'email' },
@@ -32,21 +35,16 @@ export default function Register({ setScreen }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Navigate to dashboard based on user type
-    if (userType === 'landlord') {
-      setScreen('dashboard-landlord');
-    } else if (userType === 'tenant') {
-      setScreen('dashboard-tenant');
-    }
+    setUserType(userType);
+    navigate('/dashboard');
   };
 
   return (
     <main className="screen auth-screen">
-
       <div className="auth-card">
         <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '20px' }}>
           <button
-            onClick={() => setUserType('tenant')}
+            onClick={() => setUserTypeLocal('tenant')}
             style={{
               padding: '8px 16px',
               border: userType === 'tenant' ? `2px solid ${PRIMARY}` : '1px solid #ddd',
@@ -61,7 +59,7 @@ export default function Register({ setScreen }) {
             Tenant
           </button>
           <button
-            onClick={() => setUserType('landlord')}
+            onClick={() => setUserTypeLocal('landlord')}
             style={{
               padding: '8px 16px',
               border: userType === 'landlord' ? `2px solid ${PRIMARY}` : '1px solid #ddd',
@@ -80,9 +78,7 @@ export default function Register({ setScreen }) {
         <h1 style={{ textAlign: 'center', marginBottom: '20px', fontSize: '26px', fontWeight: '700' }}>
           <span style={{ color: PRIMARY }}>Create</span>
           {' '}
-          <span style={{ color: SECONDARY }}>
-            Your Account
-          </span>
+          <span style={{ color: SECONDARY }}>Your Account</span>
           <br />
           <strong style={{ textTransform: 'capitalize' }}>{userType}</strong>
         </h1>
@@ -119,7 +115,7 @@ export default function Register({ setScreen }) {
 
         <div style={{ textAlign: 'center', marginTop: '16px' }}>
           <button
-            onClick={() => setScreen('auth')}
+            onClick={() => navigate('/login')}
             style={{
               background: 'none',
               border: 'none',

@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="388b320f-60eb-47da-829b-907b7b342485" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/db.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BookingPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Dashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Dashboard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ListingPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/ListingPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Listings.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/map.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/map.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/images/DormScout-Worklog.xlsx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +49,28 @@
     &quot;last_opened_file_path&quot;: &quot;C:/Users/amiha/Documents/GitHub/dormscout&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\amiha\Documents\GitHub\dormscout\src\pages\Map" />
+      <recent name="C:\Users\amiha\Documents\GitHub\dormscout\src\pages\Messaging" />
+      <recent name="C:\Users\amiha\Documents\GitHub\dormscout\src\pages\Support" />
+      <recent name="C:\Users\amiha\Documents\GitHub\dormscout\src\pages\Settings" />
+      <recent name="C:\Users\amiha\Documents\GitHub\dormscout\src\pages\Reviews" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="dormscout" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="dormscout" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="388b320f-60eb-47da-829b-907b7b342485" name="Changes" comment="" />
