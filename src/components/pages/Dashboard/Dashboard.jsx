@@ -8,281 +8,180 @@ import Messaging from '../Messaging/Messaging';
 import Settings from '../Settings/Settings';
 import Notifications from '../Notifications/Notifications';
 import { useBooking } from '../../../context/BookingContext';
-
-const PRIMARY = '#E8622E';
-const SECONDARY = '#5BADA8';
-
-const COLORS = {
-  light: {
-    bg: 'linear-gradient(120deg, #d7ebe9 0%, #e8d8c8 55%, #f6dfc9 100%)',
-    navBg: '#fff',
-    cardBg: '#fff',
-    sidebarBg: '#fff',
-    text: '#333',
-    secondaryText: '#666',
-    border: '#f0f0f0',
-  },
-  dark: {
-    bg: '#1a1a2e',
-    navBg: '#16213e',
-    cardBg: '#16213e',
-    sidebarBg: '#0f3460',
-    text: '#eaeaea',
-    secondaryText: '#a0a0b0',
-    border: '#2a2a4a',
-  },
-};
+import './Dashboard.css';
 
 const NAV_ITEMS = {
   landlord: [
-    { id: 'overview', label: 'Overview' },
-    { id: 'map', label: 'Map View' },
-    { id: 'listing', label: 'Listing' },
-    { id: 'notifications', label: 'Notifications' },
-    { id: 'messages', label: 'Messages' },
-    { id: 'settings', label: 'Settings' },
-    { id: 'reviews', label: 'Reviews' },
+    { id: 'overview',       label: 'Overview' },
+    { id: 'map',            label: 'Map View' },
+    { id: 'listing',        label: 'Listing' },
+    { id: 'notifications',  label: 'Notifications' },
+    { id: 'messages',       label: 'Messages' },
+    { id: 'settings',       label: 'Settings' },
+    { id: 'reviews',        label: 'Reviews' },
   ],
   tenant: [
-    { id: 'overview', label: 'Overview' },
-    { id: 'map', label: 'Map View' },
-    { id: 'booking', label: 'Booking' },
-    { id: 'notifications', label: 'Notifications' },
-    { id: 'messages', label: 'Messages' },
-    { id: 'settings', label: 'Settings' },
-    { id: 'reviews', label: 'Reviews' },
+    { id: 'overview',       label: 'Overview' },
+    { id: 'map',            label: 'Map View' },
+    { id: 'booking',        label: 'Booking' },
+    { id: 'notifications',  label: 'Notifications' },
+    { id: 'messages',       label: 'Messages' },
+    { id: 'settings',       label: 'Settings' },
+    { id: 'reviews',        label: 'Reviews' },
   ],
 };
 
 const STATS = {
   landlord: [
-    { title: 'All Listings', value: '4', align: 'center' },
-    { title: 'Notifications', value: '3', align: 'center' },
-    { title: 'Messages', value: '3', align: 'center' },
+    { title: 'All Listings',    value: '4', align: 'center' },
+    { title: 'Notifications',   value: '3', align: 'center' },
+    { title: 'Messages',        value: '3', align: 'center' },
   ],
   tenant: [
     { title: 'Your Current Booking', value: 'Sunshine Boarding House', align: 'left' },
-    { title: 'Notifications', value: '1', align: 'center' },
-    { title: 'Messages', value: '1', align: 'center' },
+    { title: 'Notifications',        value: '1', align: 'center' },
+    { title: 'Messages',             value: '1', align: 'center' },
   ],
 };
 
 const MESSAGES = [
-  { name: 'LeBron James', property: 'Sunshine Boarding House' },
-  { name: 'Steph Curry', property: 'Sunshine Boarding House' },
-  { name: 'Michael Jordan', property: 'Sunshine Boarding House' },
+  { name: 'LeBron James',    property: 'Sunshine Boarding House' },
+  { name: 'Steph Curry',     property: 'Sunshine Boarding House' },
+  { name: 'Michael Jordan',  property: 'Sunshine Boarding House' },
 ];
 
 const ICONS = {
-  overview: '📊',
-  map: '🗺️',
-  listing: '📋',
-  booking: '📅',
+  overview:      '📊',
+  map:           '🗺️',
+  listing:       '📋',
+  booking:       '📅',
   notifications: '🔔',
-  messages: '💬',
-  settings: '⚙️',
-  reviews: '⭐',
+  messages:      '💬',
+  settings:      '⚙️',
+  reviews:       '⭐',
+};
+
+const SECTION_LABELS = {
+  map:           'Map',
+  listing:       'Listing',
+  settings:      'Settings',
+  reviews:       'Reviews',
+  booking:       'Booking',
+  notifications: 'Notifications',
+};
+
+const SECTION_DESCRIPTIONS = {
+  map:           'Search for dorms around Cebu City and find the perfect dorm near campus',
+  listing:       'Create or delete your listing.',
+  settings:      'Manage your profile, security, and application preferences.',
+  reviews:       'Real feedback from students who have lived there',
+  booking:       'Manage and track all your boarding house booking requests.',
+  notifications: 'Stay updated with booking requests, approvals, and messages.',
+  messages:      'Chat with landlords and property managers about bookings.',
+};
+
+const NOTIF_ICONS = {
+  new_booking:      '📦',
+  booking_accepted: '✅',
+  booking_rejected: '❌',
+};
+
+const getNotifIcon = (type) => NOTIF_ICONS[type] || '💬';
+
+const getHeading = (activeNav, isLandlord) => {
+  if (activeNav === 'map')           return <><span className="heading-primary">Map </span><span className="heading-secondary">View</span></>;
+  if (activeNav === 'listing' && isLandlord) return <span className="heading-primary">Listings</span>;
+  if (activeNav === 'booking' && !isLandlord) return <><span className="heading-primary">My </span><span className="heading-secondary">Bookings</span></>;
+  if (activeNav === 'settings')      return <span className="heading-primary">Settings</span>;
+  if (activeNav === 'reviews')       return <span className="heading-primary">Reviews</span>;
+  if (activeNav === 'notifications') return <span className="heading-primary">Notifications</span>;
+  if (activeNav === 'messages')      return <span className="heading-primary">Messages</span>;
+  return <><span className="heading-primary">Welcome</span><span className="heading-secondary">Back</span></>;
 };
 
 export default function Dashboard({ userType = 'tenant', darkMode = false, setDarkMode }) {
-  const [searchParams] = useSearchParams();
-  const colors = darkMode ? COLORS.dark : COLORS.light;
-  const sectionFromUrl = searchParams.get('section') || 'overview';
-  const [activeNav, setActiveNav] = useState(sectionFromUrl);
+  const [searchParams]    = useSearchParams();
+  const sectionFromUrl    = searchParams.get('section') || 'overview';
+  const [activeNav, setActiveNav]           = useState(sectionFromUrl);
   const [editListingData, setEditListingData] = useState(null);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const navItems = NAV_ITEMS[userType] || NAV_ITEMS.tenant;
-  const stats = STATS[userType] || STATS.tenant;
+  const [showDropdown, setShowDropdown]     = useState(false);
+  const navItems   = NAV_ITEMS[userType]  || NAV_ITEMS.tenant;
+  const stats      = STATS[userType]      || STATS.tenant;
   const isLandlord = userType === 'landlord';
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
+  const navigate    = useNavigate();
   const { getUnreadCount, getNotifications, markNotificationRead } = useBooking();
+  const theme = darkMode ? 'dark' : 'light';
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target))
         setShowDropdown(false);
-      }
     };
-    if (showDropdown) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    if (showDropdown) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showDropdown]);
 
-  const handleNavClick = (id) => {
-    setActiveNav(id);
-  };
+  const subLabel = activeNav === 'messages'
+    ? 'Messages'
+    : SECTION_LABELS[activeNav] || 'Dashboard';
+
+  const subDesc = activeNav === 'messages'
+    ? SECTION_DESCRIPTIONS.messages
+    : SECTION_DESCRIPTIONS[activeNav]
+      || (isLandlord
+        ? 'See an overview of your current listings, messages, and recent activity.'
+        : 'See an overview of your current bookings, messages, and recent activity.');
+
+  const hideHeading = ['messages', 'reviews', 'notifications'].includes(activeNav);
 
   return (
-    <div style={{
-      background: colors.bg,
-      minHeight: '100vh',
-      paddingTop: '60px',
-    }}>
-      <nav style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 100,
-        background: colors.navBg,
-        borderBottom: `3px solid ${SECONDARY}`,
-        padding: '16px 32px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
-        <h1 style={{ fontSize: '24px', fontWeight: '700', margin: 0, color: colors.text }}>DormScout</h1>
-        <div ref={dropdownRef} style={{ display: 'flex', gap: '16px', alignItems: 'center', position: 'relative' }}>
-          <div
-            onClick={() => setShowDropdown(!showDropdown)}
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              background: '#9370DB',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#fff',
-              fontSize: '18px',
-              cursor: 'pointer',
-              transition: 'transform 0.2s ease',
-              transform: 'scale(1)',
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-          >
+    <div className={`dashboard-wrapper ${theme}`}>
+
+      {/* ===== Navbar ===== */}
+      <nav className="dashboard-nav">
+        <h1 className="dashboard-nav-title">DormScout</h1>
+
+        <div ref={dropdownRef} className="dashboard-dropdown-wrap">
+          <div className="dashboard-avatar" onClick={() => setShowDropdown(!showDropdown)}>
             👤
           </div>
 
           {showDropdown && (
-            <div style={{
-              position: 'absolute',
-              top: '60px',
-              right: '0',
-              background: colors.cardBg,
-              borderRadius: '12px',
-              border: `1px solid ${colors.border}`,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-              minWidth: '220px',
-              zIndex: 1001,
-              overflow: 'hidden',
-            }}>
+            <div className="dashboard-dropdown">
               <div
-                onClick={() => {
-                  navigate('/profile');
-                  setShowDropdown(false);
-                }}
-                style={{
-                  padding: '12px 16px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  borderBottom: `1px solid ${colors.border}`,
-                  fontWeight: '600',
-                  background: PRIMARY,
-                  color: '#fff',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
-                onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                className="dropdown-item dropdown-item-profile"
+                onClick={() => { navigate('/profile'); setShowDropdown(false); }}
               >
                 👤 My Profile
               </div>
-
               <div
-                onClick={() => {
-                  setActiveNav('settings');
-                  setShowDropdown(false);
-                }}
-                style={{
-                  padding: '12px 16px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  color: colors.text,
-                  borderBottom: `1px solid ${colors.border}`,
-                  transition: 'background 0.2s ease',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.background = colors.border}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                className="dropdown-item dropdown-item-default"
+                onClick={() => { setActiveNav('settings'); setShowDropdown(false); }}
               >
                 ⚙️ Profile Settings
               </div>
-
               <div
-                onClick={() => {
-                  navigate('/support');
-                  setShowDropdown(false);
-                }}
-                style={{
-                  padding: '12px 16px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  color: colors.text,
-                  borderBottom: `1px solid ${colors.border}`,
-                  transition: 'background 0.2s ease',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.background = colors.border}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                className="dropdown-item dropdown-item-default"
+                onClick={() => { navigate('/support'); setShowDropdown(false); }}
               >
                 ❓ Help and Support
               </div>
-
               <div
-                onClick={() => {
-                  navigate('/about');
-                  setShowDropdown(false);
-                }}
-                style={{
-                  padding: '12px 16px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  color: colors.text,
-                  borderBottom: `1px solid ${colors.border}`,
-                  transition: 'background 0.2s ease',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.background = colors.border}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                className="dropdown-item dropdown-item-default"
+                onClick={() => { navigate('/about'); setShowDropdown(false); }}
               >
                 ℹ️ About Us
               </div>
-
               <div
+                className="dropdown-item dropdown-item-default dropdown-item-dark-toggle"
                 onClick={() => setDarkMode(!darkMode)}
-                style={{
-                  padding: '12px 16px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  color: colors.text,
-                  borderBottom: `1px solid ${colors.border}`,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  transition: 'background 0.2s ease',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.background = colors.border}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
                 <span>{darkMode ? '☀️' : '🌙'} {darkMode ? 'Light Mode' : 'Dark Mode'}</span>
               </div>
-
               <div
-                onClick={() => {
-                  setShowDropdown(false);
-                  navigate('/');
-                }}
-                style={{
-                  padding: '12px 16px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  color: '#dc3545',
-                  fontWeight: '600',
-                  transition: 'background 0.2s ease',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.background = colors.border}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                className="dropdown-item dropdown-item-logout"
+                onClick={() => { setShowDropdown(false); navigate('/'); }}
               >
                 🚪 Logout
               </div>
@@ -291,126 +190,55 @@ export default function Dashboard({ userType = 'tenant', darkMode = false, setDa
         </div>
       </nav>
 
-      {/* Everything below this line is unchanged */}
-      <div style={{ padding: '32px 40px', maxWidth: '1400px', margin: '0 auto' }}>
-        {activeNav !== 'messages' && activeNav !== 'reviews' && activeNav !== 'notifications' && (
-          <h2 style={{
-            fontSize: '48px',
-            fontWeight: '700',
-            margin: isLandlord ? '0 0 8px 0' : '0 0 32px 0',
-            textAlign: 'center',
-            lineHeight: '1.1',
-          }}>
-            {activeNav === 'map' ? (
-              <><span style={{ color: PRIMARY }}>Map </span><span style={{ color: SECONDARY }}>View</span></>
-            ) : activeNav === 'listing' && isLandlord ? (
-              <span style={{ color: PRIMARY }}>Listings</span>
-            ) : activeNav === 'booking' && !isLandlord ? (
-              <><span style={{ color: PRIMARY }}>My </span><span style={{ color: SECONDARY }}>Bookings</span></>
-            ) : activeNav === 'settings' ? (
-              <span style={{ color: PRIMARY }}>Settings</span>
-            ) : (
-              <><span style={{ color: PRIMARY }}>Welcome</span><span style={{ color: SECONDARY }}>Back</span></>
-            )}
+      {/* ===== Content ===== */}
+      <div className="dashboard-content">
+
+        {/* Page Heading */}
+        {!hideHeading && (
+          <h2 className={`dashboard-heading ${isLandlord && activeNav === 'listing' ? 'has-bottom-margin-sm' : 'has-bottom-margin-lg'}`}>
+            {getHeading(activeNav, isLandlord)}
           </h2>
         )}
-        {activeNav === 'reviews' && (
-          <h2 style={{ fontSize: '48px', fontWeight: '700', margin: '0 0 32px 0', textAlign: 'center', lineHeight: '1.1' }}>
-            <span style={{ color: PRIMARY }}>Reviews</span>
-          </h2>
-        )}
-        {activeNav === 'notifications' && (
-          <h2 style={{ fontSize: '48px', fontWeight: '700', margin: '0 0 32px 0', textAlign: 'center', lineHeight: '1.1' }}>
-            <span style={{ color: PRIMARY }}>Notifications</span>
-          </h2>
-        )}
-        {activeNav === 'messages' && (
-          <h2 style={{ fontSize: '48px', fontWeight: '700', margin: '0 0 32px 0', textAlign: 'center', lineHeight: '1.1' }}>
-            <span style={{ color: PRIMARY }}>Messages</span>
+        {hideHeading && (
+          <h2 className="dashboard-heading has-bottom-margin-lg">
+            {getHeading(activeNav, isLandlord)}
           </h2>
         )}
 
-        <div style={{ marginBottom: '28px' }}>
-          {activeNav === 'messages' ? (
-            <>
-              <h4 style={{ fontSize: '20px', fontWeight: '700', margin: '0 0 8px 0', color: colors.text }}>Messages</h4>
-              <p style={{ fontSize: '14px', color: colors.secondaryText, margin: 0 }}>
-                Chat with landlords and property managers about bookings.
-              </p>
-            </>
-          ) : (
-            <>
-              <h4 style={{ fontSize: '20px', fontWeight: '700', margin: '0 0 8px 0', color: colors.text }}>
-                {activeNav === 'map' ? 'Map' : activeNav === 'listing' ? 'Listing' : activeNav === 'settings' ? 'Settings' : activeNav === 'reviews' ? 'Reviews' : activeNav === 'booking' ? 'Booking' : activeNav === 'notifications' ? 'Notifications' : 'Dashboard'}
-              </h4>
-              <p style={{ fontSize: '14px', color: colors.secondaryText, margin: 0 }}>
-                {activeNav === 'map' ? 'Search for dorms around Cebu City and find the perfect dorm near campus'
-                  : activeNav === 'listing' ? 'Create or delete your listing.'
-                  : activeNav === 'settings' ? 'Manage your profile, security, and application preferences.'
-                  : activeNav === 'reviews' ? 'Real feedback from students who have lived there'
-                  : activeNav === 'booking' ? 'Manage and track all your boarding house booking requests.'
-                  : activeNav === 'notifications' ? 'Stay updated with booking requests, approvals, and messages.'
-                  : isLandlord ? 'See an overview of your current listings, messages, and recent activity.'
-                  : 'See an overview of your current bookings, messages, and recent activity.'}
-              </p>
-            </>
-          )}
+        {/* Sub-header */}
+        <div className="dashboard-subheader">
+          <h4>{subLabel}</h4>
+          <p>{subDesc}</p>
         </div>
 
-        <div style={{ display: 'flex', gap: '24px' }}>
-          <div style={{ width: '280px', background: colors.sidebarBg, borderRadius: '20px', padding: '24px', height: 'fit-content' }}>
+        {/* Layout */}
+        <div className="dashboard-layout">
+
+          {/* Sidebar */}
+          <div className="dashboard-sidebar">
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => handleNavClick(item.id)}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  textAlign: 'left',
-                  border: 'none',
-                  background: activeNav === item.id ? PRIMARY : 'transparent',
-                  color: activeNav === item.id ? '#ffffff' : (darkMode ? '#ffffff' : '#E8622E'),
-                  borderRadius: activeNav === item.id ? '12px' : '0',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: activeNav === item.id ? '600' : '500',
-                  margin: activeNav === item.id ? '6px' : '0',
-                  marginBottom: '4px',
-                  transition: 'all 0.25s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                }}
-                onMouseEnter={(e) => {
-                  if (activeNav !== item.id) {
-                    e.currentTarget.style.background = darkMode ? '#1a1a4a' : '#f5f5f5';
-                    e.currentTarget.style.color = darkMode ? '#ffffff' : '#E8622E';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activeNav !== item.id) {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = darkMode ? '#ffffff' : '#E8622E';
-                  }
-                }}
+                className={`sidebar-nav-btn ${activeNav === item.id ? 'active' : ''}`}
+                onClick={() => setActiveNav(item.id)}
               >
-                <span style={{ fontSize: '16px' }}>{ICONS[item.id] || '•'}</span>
+                <span className="sidebar-nav-icon">{ICONS[item.id] || '•'}</span>
                 {item.label}
                 {item.id === 'notifications' && getUnreadCount(userType) > 0 && (
-                  <span style={{
-                    marginLeft: 'auto', background: '#dc3545', color: '#fff', fontSize: '11px',
-                    padding: '2px 7px', borderRadius: '10px', fontWeight: '700', minWidth: '18px', textAlign: 'center',
-                  }}>
-                    {getUnreadCount(userType)}
-                  </span>
+                  <span className="sidebar-badge">{getUnreadCount(userType)}</span>
                 )}
               </button>
             ))}
           </div>
 
-          <div style={{ flex: 1 }}>
+          {/* Main Panel */}
+          <div className="dashboard-main">
             {activeNav === 'map' ? (
-              <Map darkMode={darkMode} userType={userType} onEditListing={(listing) => { setEditListingData(listing); setActiveNav('listing'); }} />
+              <Map
+                darkMode={darkMode}
+                userType={userType}
+                onEditListing={(listing) => { setEditListingData(listing); setActiveNav('listing'); }}
+              />
             ) : activeNav === 'listing' && isLandlord ? (
               <ListingPage darkMode={darkMode} editListingData={editListingData} onEditHandled={() => setEditListingData(null)} />
             ) : activeNav === 'booking' && !isLandlord ? (
@@ -424,88 +252,63 @@ export default function Dashboard({ userType = 'tenant', darkMode = false, setDa
             ) : activeNav === 'settings' ? (
               <Settings darkMode={darkMode} setDarkMode={setDarkMode} userType={userType} />
             ) : (
+
+              /* ===== Overview ===== */
               <>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '24px' }}>
+                <div className="stats-grid">
                   {stats.map((stat) => (
-                    <div key={stat.title} style={{ background: colors.cardBg, borderRadius: '16px', padding: '24px', textAlign: stat.align }}>
-                      <h5 style={{ fontSize: '12px', color: colors.secondaryText, fontWeight: '500', margin: '0 0 12px 0', textTransform: 'uppercase' }}>
-                        {stat.title}
-                      </h5>
-                      <p style={{ fontSize: stat.align === 'center' ? '48px' : '16px', fontWeight: '700', margin: 0, color: stat.align === 'center' ? PRIMARY : colors.text }}>
-                        {stat.value}
-                      </p>
+                    <div key={stat.title} className={`stat-card ${stat.align === 'center' ? 'stat-card-center' : 'stat-card-left'}`}>
+                      <h5 className="stat-label">{stat.title}</h5>
+                      {stat.align === 'center'
+                        ? <p className="stat-value-large">{stat.value}</p>
+                        : <p className="stat-value-small">{stat.value}</p>
+                      }
                     </div>
                   ))}
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <div className="overview-grid">
                   {/* Recent Messages */}
-                  <div style={{ background: colors.cardBg, borderRadius: '16px', padding: '24px' }}>
-                    <h5 style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 16px 0', color: colors.text }}>💬 Recent Messages</h5>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div className="overview-card">
+                    <h5 className="overview-card-title">💬 Recent Messages</h5>
+                    <div className="messages-list">
                       {MESSAGES.map((msg, idx) => (
-                        <div key={idx} style={{ padding: '12px', background: darkMode ? '#0f3460' : '#f9f9f9', borderRadius: '8px', fontSize: '13px', color: colors.text }}>
-                          <div style={{ fontWeight: '600', color: colors.text }}>{msg.name}</div>
-                          <div style={{ fontSize: '12px', color: colors.secondaryText }}>{msg.property}</div>
+                        <div key={idx} className="message-item">
+                          <div className="message-item-name">{msg.name}</div>
+                          <div className="message-item-property">{msg.property}</div>
                         </div>
                       ))}
                     </div>
                   </div>
 
                   {/* Recent Notifications */}
-                  <div style={{ background: colors.cardBg, borderRadius: '16px', padding: '24px' }}>
-                    <h5 style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 16px 0', color: colors.text }}>
+                  <div className="overview-card">
+                    <h5 className="overview-card-title">
                       🔔 Recent Notifications
                       {getUnreadCount(userType) > 0 && (
-                        <span style={{
-                          marginLeft: '8px', background: '#dc3545', color: '#fff',
-                          fontSize: '11px', padding: '2px 7px', borderRadius: '10px', fontWeight: '700',
-                        }}>
-                          {getUnreadCount(userType)} new
-                        </span>
+                        <span className="notif-badge">{getUnreadCount(userType)} new</span>
                       )}
                     </h5>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div className="notifications-list">
                       {getNotifications(userType).slice(0, 3).length === 0 ? (
-                        <div style={{ padding: '12px', background: darkMode ? '#0f3460' : '#f9f9f9', borderRadius: '8px', fontSize: '13px', color: colors.secondaryText, textAlign: 'center' }}>
-                          No notifications yet
-                        </div>
+                        <div className="notif-empty">No notifications yet</div>
                       ) : (
                         getNotifications(userType).slice(0, 3).map((notif) => (
                           <div
                             key={notif.id}
+                            className={`notif-item ${notif.read ? 'read' : 'unread'}`}
                             onClick={() => { markNotificationRead(notif.id); setActiveNav('notifications'); }}
-                            style={{
-                              padding: '10px 12px',
-                              background: notif.read ? (darkMode ? '#0f3460' : '#f9f9f9') : (darkMode ? '#1a2a50' : '#fff8f0'),
-                              border: notif.read ? 'none' : `1px solid ${PRIMARY}`,
-                              borderRadius: '8px',
-                              cursor: 'pointer',
-                              display: 'flex',
-                              gap: '10px',
-                              alignItems: 'flex-start',
-                              transition: 'opacity 0.2s',
-                            }}
                           >
-                            <span style={{ fontSize: '16px', flexShrink: 0 }}>
-                              {notif.type === 'new_booking' ? '📦' : notif.type === 'booking_accepted' ? '✅' : notif.type === 'booking_rejected' ? '❌' : '💬'}
-                            </span>
+                            <span className="notif-icon">{getNotifIcon(notif.type)}</span>
                             <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontWeight: '600', fontSize: '12px', color: colors.text, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                {notif.title}
-                              </div>
-                              <div style={{ fontSize: '11px', color: colors.secondaryText, marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                {notif.message}
-                              </div>
+                              <div className="notif-title">{notif.title}</div>
+                              <div className="notif-message">{notif.message}</div>
                             </div>
                           </div>
                         ))
                       )}
                       {getNotifications(userType).length > 3 && (
-                        <button
-                          onClick={() => setActiveNav('notifications')}
-                          style={{ background: 'transparent', border: 'none', color: PRIMARY, fontSize: '12px', fontWeight: '600', cursor: 'pointer', padding: '4px 0', textAlign: 'left' }}
-                        >
+                        <button className="notif-view-all-btn" onClick={() => setActiveNav('notifications')}>
                           View all {getNotifications(userType).length} notifications →
                         </button>
                       )}

@@ -1,74 +1,51 @@
 import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import './Settings.css';
 
 const PRIMARY = '#E8622E';
 
+/* ─────────────────────────── Toggle ─────────────────────────── */
 const Toggle = ({ checked, onChange }) => (
   <button
     type="button"
+    className="toggle-btn"
     onClick={() => onChange(!checked)}
-    style={{
-      width: '50px',
-      height: '28px',
-      borderRadius: '14px',
-      border: 'none',
-      background: checked ? PRIMARY : '#ddd',
-      cursor: 'pointer',
-      position: 'relative',
-      transition: 'background 0.3s',
-    }}
+    style={{ background: checked ? PRIMARY : '#ddd' }}
   >
     <div
-      style={{
-        width: '24px',
-        height: '24px',
-        borderRadius: '12px',
-        background: '#fff',
-        position: 'absolute',
-        top: '2px',
-        left: checked ? '24px' : '2px',
-        transition: 'left 0.3s',
-      }}
+      className="toggle-btn__knob"
+      style={{ left: checked ? '24px' : '2px' }}
     />
   </button>
 );
 
+/* ─────────────────────────── SettingRow ─────────────────────── */
 const SettingRow = ({ label, control, colors }) => (
-  <div style={{
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '16px 0',
-    borderBottom: `1px solid ${colors.border}`,
-  }}>
-    <label style={{ fontSize: '14px', color: colors.text, fontWeight: '500', cursor: 'pointer' }}>
+  <div
+    className="setting-row"
+    style={{ borderBottom: `1px solid ${colors.border}` }}
+  >
+    <label className="setting-row__label" style={{ color: colors.text }}>
       {label}
     </label>
     {control}
   </div>
 );
 
+/* ─────────────────────────── SettingSection ─────────────────── */
 const SettingSection = ({ title, children, colors }) => (
-  <div style={{ marginBottom: '32px' }}>
-    <h3 style={{
-      fontSize: '18px',
-      fontWeight: '700',
-      color: colors.text,
-      margin: '0 0 18px 0',
-      paddingBottom: '12px',
-      borderBottom: `3px solid ${PRIMARY}`,
-    }}>
+  <div className="settings-section">
+    <h3 className="settings-section__title" style={{ color: colors.text }}>
       {title}
     </h3>
-    <div style={{ marginTop: '16px' }}>
-      {children}
-    </div>
+    <div className="settings-section__body">{children}</div>
   </div>
 );
 
+/* ─────────────────────────── InputField ─────────────────────── */
 const InputField = ({ label, type = 'text', value, onChange, placeholder, colors }) => (
-  <div>
-    <label style={{ fontSize: '12px', color: colors.secondaryText, fontWeight: '600', display: 'block', marginBottom: '8px' }}>
+  <div className="input-field">
+    <label className="input-field__label" style={{ color: colors.secondaryText }}>
       {label}
     </label>
     <input
@@ -76,311 +53,207 @@ const InputField = ({ label, type = 'text', value, onChange, placeholder, colors
       value={value}
       onChange={onChange}
       placeholder={placeholder}
+      className="input-field__input"
       style={{
-        width: '100%',
-        padding: '10px 12px',
-        borderRadius: '6px',
         border: `1px solid ${colors.border}`,
         background: colors.inputBg,
         color: colors.text,
-        fontSize: '14px',
-        boxSizing: 'border-box',
-        outline: 'none',
       }}
     />
   </div>
 );
 
+/* ─────────────────────────── Settings ───────────────────────── */
 export default function Settings({ userType = 'tenant', darkMode = false, setDarkMode }) {
   const [searchParams] = useSearchParams();
   const dk = darkMode;
+
   const colors = {
-    cardBg: dk ? '#16213e' : '#fff',
-    text: dk ? '#eaeaea' : '#333',
+    cardBg:        dk ? '#16213e' : '#fff',
+    text:          dk ? '#eaeaea' : '#333',
     secondaryText: dk ? '#a0a0b0' : '#666',
-    border: dk ? '#2a2a4a' : '#e8e8e8',
-    inputBg: dk ? '#0f3460' : '#fff',
-    tabBg: dk ? '#2a2a4a' : '#f0f0f0',
+    border:        dk ? '#2a2a4a' : '#e8e8e8',
+    inputBg:       dk ? '#0f3460' : '#fff',
+    tabBg:         dk ? '#2a2a4a' : '#f0f0f0',
   };
 
   const isLandlord = userType === 'landlord';
 
-  // Set initial tab from URL query parameter, default to 'profile'
   const tabFromUrl = searchParams.get('tab') || 'profile';
   const [activeSettingTab, setActiveSettingTab] = useState(tabFromUrl);
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [university, setUniversity] = useState('');
-  const [course, setCourse] = useState('');
-  const [yearLevel, setYearLevel] = useState('');
-  const [studentId, setStudentId] = useState('');
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [businessName, setBusinessName] = useState('');
-  const [businessPermit, setBusinessPermit] = useState('');
+  // Profile fields
+  const [firstName,       setFirstName]       = useState('');
+  const [lastName,        setLastName]         = useState('');
+  const [email,           setEmail]            = useState('');
+  const [phoneNumber,     setPhoneNumber]      = useState('');
+  const [university,      setUniversity]       = useState('');
+  const [course,          setCourse]           = useState('');
+  const [yearLevel,       setYearLevel]        = useState('');
+  const [studentId,       setStudentId]        = useState('');
+  const [currentPassword, setCurrentPassword]  = useState('');
+  const [newPassword,     setNewPassword]      = useState('');
+  const [confirmPassword, setConfirmPassword]  = useState('');
+  const [businessName,    setBusinessName]     = useState('');
+  const [businessPermit,  setBusinessPermit]   = useState('');
 
+  // App settings
   const [emailNotifications, setEmailNotifications] = useState(true);
-  const [inAppNotifications, setInAppNotifications] = useState(true);
-  const [messageAlerts, setMessageAlerts] = useState(true);
+  const [inAppNotifications,  setInAppNotifications]  = useState(true);
+  const [messageAlerts,       setMessageAlerts]       = useState(true);
 
+  /* ── Helpers ── */
+  const tabStyle = (tab) => ({
+    background: activeSettingTab === tab ? PRIMARY : colors.tabBg,
+    color:      activeSettingTab === tab ? '#fff'  : colors.text,
+  });
+
+  const UNIVERSITIES = [
+    'Cebu Institute of Technology - University',
+    'University of San Carlos - Downtown',
+    'University of the Visayas',
+    'University of Cebu - Main',
+    'University of San Carlos - Talamban',
+    'University of Cebu - Banilad',
+    'University of Cebu - METC',
+    'University of San Jose-Recoletos - Main',
+    'University of San Jose-Recoletos - Basak',
+    'Cebu Normal University',
+    'University of the Philippines Cebu',
+    'Southwestern University PHINMA',
+    'Cebu Technological University',
+    "Saint Theresa's College",
+  ];
+
+  /* ── Render ── */
   return (
-    <div style={{
-      background: colors.cardBg,
-      borderRadius: '16px',
-      padding: '32px',
-      border: `1px solid ${colors.border}`,
-    }}>
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '32px' }}>
-        <button
-          onClick={() => setActiveSettingTab('profile')}
-          style={{
-            padding: '12px 24px',
-            borderRadius: '8px',
-            border: 'none',
-            background: activeSettingTab === 'profile' ? PRIMARY : colors.tabBg,
-            color: activeSettingTab === 'profile' ? '#fff' : colors.text,
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: '600',
-            transition: 'all 0.25s ease',
-          }}
-        >
-          Profile Settings
-        </button>
-        <button
-          onClick={() => setActiveSettingTab('application')}
-          style={{
-            padding: '12px 24px',
-            borderRadius: '8px',
-            border: 'none',
-            background: activeSettingTab === 'application' ? PRIMARY : colors.tabBg,
-            color: activeSettingTab === 'application' ? '#fff' : colors.text,
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: '600',
-            transition: 'all 0.25s ease',
-          }}
-        >
-          Application Settings
-        </button>
+    <div
+      className="settings-wrapper"
+      style={{ background: colors.cardBg, border: `1px solid ${colors.border}` }}
+    >
+      {/* ── Tabs ── */}
+      <div className="settings-tabs">
+        {[
+          { key: 'profile',     label: 'Profile Settings' },
+          { key: 'application', label: 'Application Settings' },
+        ].map(({ key, label }) => (
+          <button
+            key={key}
+            className="settings-tab-btn"
+            style={tabStyle(key)}
+            onClick={() => setActiveSettingTab(key)}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
+      {/* ══════════════ PROFILE TAB ══════════════ */}
       {activeSettingTab === 'profile' && (
         <>
           {/* Profile Picture */}
           <SettingSection title="Profile Picture" colors={colors}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '20px' }}>
-              <div
-                style={{
-                  width: '80px',
-                  height: '80px',
-                  borderRadius: '50%',
-                  background: '#9370DB',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#fff',
-                  fontSize: '36px',
-                }}
-              >
-                ??
-              </div>
+            <div className="settings-avatar">
+              <div className="settings-avatar__circle">??</div>
               <div>
-                <p style={{ color: colors.secondaryText, fontSize: '14px', margin: '0 0 8px 0' }}>
+                <p className="settings-avatar__hint" style={{ color: colors.secondaryText }}>
                   Click the avatar to upload a new profile picture.
                 </p>
-                <button
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: '6px',
-                    border: 'none',
-                    background: PRIMARY,
-                    color: '#fff',
-                    cursor: 'pointer',
-                    fontSize: '13px',
-                    fontWeight: '600',
-                  }}
-                >
-                  Upload Profile
-                </button>
+                <button className="btn-primary">Upload Profile</button>
               </div>
             </div>
           </SettingSection>
 
           {/* Personal Information */}
           <SettingSection title="Personal Information" colors={colors}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-              <InputField label="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="John" colors={colors} />
-              <InputField label="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Doe" colors={colors} />
+            <div className="settings-grid-2 settings-grid-2--mb">
+              <InputField label="First Name"   value={firstName}   onChange={(e) => setFirstName(e.target.value)}   placeholder="John"  colors={colors} />
+              <InputField label="Last Name"    value={lastName}    onChange={(e) => setLastName(e.target.value)}    placeholder="Doe"   colors={colors} />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <InputField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john@example.com" colors={colors} />
-              <InputField label="Phone Number" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} placeholder="+63 9XX XXX XXXX" colors={colors} />
+            <div className="settings-grid-2">
+              <InputField label="Email"        type="email" value={email}        onChange={(e) => setEmail(e.target.value)}        placeholder="john@example.com"   colors={colors} />
+              <InputField label="Phone Number" type="tel"   value={phoneNumber}  onChange={(e) => setPhoneNumber(e.target.value)}  placeholder="+63 9XX XXX XXXX"   colors={colors} />
             </div>
-            <button
-              style={{
-                marginTop: '16px',
-                padding: '8px 16px',
-                borderRadius: '6px',
-                border: 'none',
-                background: PRIMARY,
-                color: '#fff',
-                cursor: 'pointer',
-                fontSize: '13px',
-                fontWeight: '600',
-              }}
-            >
-              Save Changes
-            </button>
+            <button className="btn-primary btn-primary--mt">Save Changes</button>
           </SettingSection>
 
           {/* Landlord: Business Information */}
           {isLandlord && (
             <SettingSection title="Business Information" colors={colors}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <InputField label="Business Name" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="Enter business name" colors={colors} />
-                <InputField label="Business Permit Number" value={businessPermit} onChange={(e) => setBusinessPermit(e.target.value)} placeholder="Enter permit number" colors={colors} />
+              <div className="settings-grid-2 settings-grid-2--mb">
+                <InputField label="Business Name"          value={businessName}   onChange={(e) => setBusinessName(e.target.value)}   placeholder="Enter business name"   colors={colors} />
+                <InputField label="Business Permit Number" value={businessPermit} onChange={(e) => setBusinessPermit(e.target.value)} placeholder="Enter permit number"    colors={colors} />
               </div>
-              <p style={{ fontSize: '13px', color: colors.secondaryText, margin: '12px 0', fontStyle: 'italic' }}>
+              <p className="settings-verify-hint" style={{ color: colors.secondaryText }}>
                 Fill in your business details to be verified as a legitimate landlord
               </p>
-              <button
-                style={{
-                  marginTop: '16px',
-                  padding: '8px 16px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: PRIMARY,
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  fontWeight: '600',
-                }}
-              >
-                Verify
-              </button>
+              <button className="btn-primary btn-primary--mt">Verify</button>
             </SettingSection>
           )}
 
           {/* Tenant: Student Information */}
           {!isLandlord && (
             <SettingSection title="Student Information" colors={colors}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div>
-                  <label style={{ fontSize: '12px', color: colors.secondaryText, fontWeight: '600', display: 'block', marginBottom: '8px' }}>
+              <div className="settings-grid-2 settings-grid-2--mb">
+                {/* University select */}
+                <div className="input-field">
+                  <label className="input-field__label" style={{ color: colors.secondaryText }}>
                     University
                   </label>
                   <select
                     value={university}
                     onChange={(e) => setUniversity(e.target.value)}
+                    className="input-field__select"
                     style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      borderRadius: '6px',
                       border: `1px solid ${colors.border}`,
                       background: colors.inputBg,
                       color: colors.text,
-                      fontSize: '14px',
-                      boxSizing: 'border-box',
-                      outline: 'none',
                     }}
                   >
                     <option value="">Select Your School</option>
-                    <option>Cebu Institute of Technology - University</option>
-                    <option>University of San Carlos - Downtown</option>
-                    <option>University of the Visayas</option>
-                    <option>University of Cebu - Main</option>
-                    <option>University of San Carlos - Talamban</option>
-                    <option>University of Cebu - Banilad</option>
-                    <option>University of Cebu - METC</option>
-                    <option>University of San Jose-Recoletos - Main</option>
-                    <option>University of San Jose-Recoletos - Basak</option>
-                    <option>Cebu Normal University</option>
-                    <option>University of the Philippines Cebu</option>
-                    <option>Southwestern University PHINMA</option>
-                    <option>Cebu Technological University</option>
-                    <option>Saint Theresa's College</option>
+                    {UNIVERSITIES.map((u) => (
+                      <option key={u}>{u}</option>
+                    ))}
                   </select>
                 </div>
+
                 <InputField label="Course" value={course} onChange={(e) => setCourse(e.target.value)} placeholder="Bachelor of Science in Computer Science" colors={colors} />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+
+              <div className="settings-grid-2">
                 <InputField label="Year Level" value={yearLevel} onChange={(e) => setYearLevel(e.target.value)} placeholder="2nd Year / 3rd Year" colors={colors} />
-                <InputField label="Student ID" value={studentId} onChange={(e) => setStudentId(e.target.value)} placeholder="2024001234" colors={colors} />
+                <InputField label="Student ID"  value={studentId}  onChange={(e) => setStudentId(e.target.value)}  placeholder="2024001234"          colors={colors} />
               </div>
-              <button
-                style={{
-                  marginTop: '16px',
-                  padding: '8px 16px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: PRIMARY,
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  fontWeight: '600',
-                }}
-              >
-                Save Changes
-              </button>
+
+              <button className="btn-primary btn-primary--mt">Save Changes</button>
             </SettingSection>
           )}
 
           {/* Change Password */}
           <SettingSection title="Change Password" colors={colors}>
-            <div style={{ marginBottom: '16px' }}>
-              <InputField label="Current Password" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Enter your current password" colors={colors} />
+            <div className="settings-password-field">
+              <InputField label="Current Password"     type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Enter your current password" colors={colors} />
             </div>
-            <div style={{ marginBottom: '16px' }}>
-              <InputField label="New Password" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Enter your new password" colors={colors} />
+            <div className="settings-password-field">
+              <InputField label="New Password"         type="password" value={newPassword}     onChange={(e) => setNewPassword(e.target.value)}     placeholder="Enter your new password"     colors={colors} />
             </div>
-            <div style={{ marginBottom: '16px' }}>
-              <InputField label="Confirm New Password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm your new password" colors={colors} />
+            <div className="settings-password-field">
+              <InputField label="Confirm New Password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm your new password"   colors={colors} />
             </div>
-            <button
-              style={{
-                padding: '8px 16px',
-                borderRadius: '6px',
-                border: 'none',
-                background: PRIMARY,
-                color: '#fff',
-                cursor: 'pointer',
-                fontSize: '13px',
-                fontWeight: '600',
-              }}
-            >
-              Save Changes
-            </button>
+            <button className="btn-primary">Save Changes</button>
           </SettingSection>
 
           {/* Danger Zone */}
           <SettingSection title="Danger Zone" colors={colors}>
-            <p style={{ color: colors.secondaryText, fontSize: '14px', marginBottom: '16px' }}>
+            <p className="settings-danger-text" style={{ color: colors.secondaryText }}>
               Once you delete your account, there is no going back. Please be certain.
             </p>
-            <button
-              style={{
-                padding: '10px 20px',
-                borderRadius: '6px',
-                border: 'none',
-                background: '#dc3545',
-                color: '#fff',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '600',
-              }}
-            >
-              Delete Account
-            </button>
+            <button className="btn-danger">Delete Account</button>
           </SettingSection>
         </>
       )}
 
+      {/* ══════════════ APPLICATION TAB ══════════════ */}
       {activeSettingTab === 'application' && (
         <>
           <SettingSection title="Appearance" colors={colors}>
@@ -392,21 +265,9 @@ export default function Settings({ userType = 'tenant', darkMode = false, setDar
           </SettingSection>
 
           <SettingSection title="Notifications" colors={colors}>
-            <SettingRow
-              label="Email Notifications"
-              control={<Toggle checked={emailNotifications} onChange={setEmailNotifications} />}
-              colors={colors}
-            />
-            <SettingRow
-              label="In-App Notifications"
-              control={<Toggle checked={inAppNotifications} onChange={setInAppNotifications} />}
-              colors={colors}
-            />
-            <SettingRow
-              label="New Message Alerts"
-              control={<Toggle checked={messageAlerts} onChange={setMessageAlerts} />}
-              colors={colors}
-            />
+            <SettingRow label="Email Notifications"  control={<Toggle checked={emailNotifications} onChange={setEmailNotifications} />} colors={colors} />
+            <SettingRow label="In-App Notifications" control={<Toggle checked={inAppNotifications}  onChange={setInAppNotifications}  />} colors={colors} />
+            <SettingRow label="New Message Alerts"   control={<Toggle checked={messageAlerts}       onChange={setMessageAlerts}       />} colors={colors} />
           </SettingSection>
         </>
       )}

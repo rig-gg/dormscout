@@ -1,0 +1,405 @@
+/* ===== Layout ===== */
+.listing-layout {
+  display: flex;
+  gap: 24px;
+}
+
+.listing-main { flex: 1; position: relative; }
+
+/* ===== Section Titles ===== */
+.listing-section-title {
+  margin-top: 0;
+}
+
+.listing-wrapper.light .listing-section-title { color: #333; }
+.listing-wrapper.dark  .listing-section-title { color: #eaeaea; }
+
+.listing-section-subtitle {
+  margin-top: 4px;
+}
+
+.listing-wrapper.light .listing-section-subtitle { color: #666; }
+.listing-wrapper.dark  .listing-section-subtitle { color: #a0a0b0; }
+
+/* ===== Empty State ===== */
+.listing-empty {
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.listing-wrapper.light .listing-empty { background: #fff; color: #333; }
+.listing-wrapper.dark  .listing-empty { background: #16213e; color: #eaeaea; }
+
+/* ===== Board Grid ===== */
+.listing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* ===== Listing Card ===== */
+.listing-card {
+  border-radius: 12px;
+  overflow: visible;
+  cursor: pointer;
+  position: relative;
+}
+
+.listing-wrapper.light .listing-card         { background: #fff;     border: 1px solid rgba(0,0,0,0.06); }
+.listing-wrapper.dark  .listing-card         { background: #16213e;  border: 1px solid #2a2a4a; }
+.listing-wrapper.light .listing-card.selected { background: #fff;     border: 2px solid #E8622E; }
+.listing-wrapper.dark  .listing-card.selected { background: #16213e;  border: 2px solid #E8622E; }
+
+.listing-card.selected { z-index: 20; }
+.listing-card:not(.selected) { z-index: 1; }
+
+/* Notification badge */
+.listing-notif-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #dc3545;
+  color: #fff;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 200;
+  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.4);
+}
+
+/* Edit button */
+.listing-edit-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #E8622E;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.2s ease;
+}
+
+.listing-edit-btn:hover { transform: scale(1.05); }
+
+/* Card image / map / placeholder */
+.listing-card-media {
+  height: 140px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px 12px 0 0;
+}
+
+.listing-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.listing-card-placeholder {
+  height: 140px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px 12px 0 0;
+}
+
+.listing-wrapper.light .listing-card-placeholder { background: #f3f3f3; color: #666; }
+.listing-wrapper.dark  .listing-card-placeholder { background: #1a1a4a; color: #a0a0b0; }
+
+/* Card body */
+.listing-card-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.listing-card-title {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.listing-wrapper.light .listing-card-title { color: #333; }
+.listing-wrapper.dark  .listing-card-title { color: #eaeaea; }
+
+.listing-card-address {
+  font-size: 13px;
+}
+
+.listing-wrapper.light .listing-card-address { color: #666; }
+.listing-wrapper.dark  .listing-card-address { color: #a0a0b0; }
+
+.listing-university-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-top: 4px;
+  color: #E8622E;
+  background: rgba(232, 98, 46, 0.08);
+}
+
+.listing-card-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: #E8622E;
+}
+
+.listing-card-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.listing-tag {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.listing-wrapper.light .listing-tag { background: #f1f1f1; color: #333; }
+.listing-wrapper.dark  .listing-tag { background: #0f3460; color: #eaeaea; }
+
+/* ===== Board Actions ===== */
+.listing-board-actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.btn-delete-listing {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  background: #dc3545;
+  color: #fff;
+  transition: opacity 0.2s;
+}
+
+.btn-delete-listing:enabled  { cursor: pointer; opacity: 1; }
+.btn-delete-listing:disabled  { cursor: not-allowed; opacity: 0.5; }
+
+.btn-create-listing {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  background: #E8622E;
+  color: #fff;
+}
+
+/* ===== Tenant Management box ===== */
+.listing-tenant-box {
+  margin-top: 32px;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.listing-wrapper.light .listing-tenant-box { background: #fff;    border: 1px solid rgba(0,0,0,0.06); }
+.listing-wrapper.dark  .listing-tenant-box { background: #16213e; border: 1px solid #2a2a4a; }
+
+/* ===== Manage Form ===== */
+.listing-form {
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-field { position: relative; }
+
+.form-error {
+  color: crimson;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.listing-input,
+.listing-select,
+.listing-textarea {
+  padding: 8px 12px;
+  border-radius: 8px;
+  width: 100%;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.listing-input  { height: 44px; }
+.listing-select { height: 44px; }
+.listing-textarea { height: 100px; resize: vertical; }
+
+.listing-wrapper.light .listing-input,
+.listing-wrapper.light .listing-select,
+.listing-wrapper.light .listing-textarea {
+  background: #fff;
+  color: #333;
+}
+
+.listing-wrapper.dark .listing-input,
+.listing-wrapper.dark .listing-select,
+.listing-wrapper.dark .listing-textarea {
+  background: #0f3460;
+  color: #eaeaea;
+  border-color: #2a2a4a;
+}
+
+.form-mt { margin-top: 12px; }
+
+/* Map container */
+.listing-map-container {
+  margin-top: 12px;
+  height: 300px;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+}
+
+.listing-map-inner {
+  width: 100%;
+  height: 100%;
+}
+
+.listing-map-hint {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.listing-map-hint-text {
+  font-size: 12px;
+  margin: 0;
+}
+
+.listing-wrapper.light .listing-map-hint-text { color: #666; }
+.listing-wrapper.dark  .listing-map-hint-text { color: #a0a0b0; }
+
+.listing-cebu-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: #dc3545;
+  background: rgba(220, 53, 69, 0.08);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* Image upload */
+.listing-upload-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.listing-wrapper.light .listing-upload-label { color: #666; }
+.listing-wrapper.dark  .listing-upload-label { color: #a0a0b0; }
+
+.listing-image-previews {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.listing-image-thumb {
+  width: 80px;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  position: relative;
+}
+
+.listing-image-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.listing-image-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* Form actions */
+.listing-form-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+}
+
+.btn-submit-listing {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  background: #E8622E;
+  color: #fff;
+}
+
+.btn-cancel-listing {
+  padding: 10px 16px;
+  background: transparent;
+  color: #E8622E;
+  border: 1px solid #E8622E;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ===== Aside / Tips ===== */
+.listing-aside { width: 320px; }
+
+.listing-tips-card {
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.listing-wrapper.light .listing-tips-card { background: #fff;    border: 1px solid rgba(0,0,0,0.06); }
+.listing-wrapper.dark  .listing-tips-card { background: #16213e; border: 1px solid #2a2a4a; }
+
+.listing-tips-title {
+  margin-top: 0;
+}
+
+.listing-wrapper.light .listing-tips-title { color: #333; }
+.listing-wrapper.dark  .listing-tips-title { color: #eaeaea; }
+
+.listing-tips-list {
+  margin-top: 8px;
+  padding-left: 18px;
+}
+
+.listing-wrapper.light .listing-tips-list { color: #666; }
+.listing-wrapper.dark  .listing-tips-list { color: #a0a0b0; }
