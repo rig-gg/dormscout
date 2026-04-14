@@ -54,7 +54,7 @@ function App() {
     </header>
   );
 
-  const pagesWithOwnNav = ['/dashboard', '/profile', '/support', '/about', '/settings', '/reviews'];
+  const pagesWithOwnNav = ['/dashboard', '/profile', '/support', '/about', '/settings', '/reviews', '/', '/login', '/register', '/forgot-password'];
   const hideGlobalHeader = pagesWithOwnNav.includes(location.pathname);
 
   return (

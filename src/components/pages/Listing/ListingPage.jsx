@@ -91,7 +91,7 @@ const filesToDataUrls = (files) =>
 
 const EMPTY_FORM = {
   title: '', address: '', price: '', rooms: '', availableRooms: '',
-  description: '', tags: '', images: [], lat: null, lng: null, university: '',
+  description: '', tags: '', images: [], lat: null, lng: null, university: '', genderPolicy: '',
 };
 
 export default function ListingPage({ mode = 'board', darkMode = false, editListingData, onEditHandled }) {
@@ -249,7 +249,7 @@ export default function ListingPage({ mode = 'board', darkMode = false, editList
       rooms: listing.rooms || '', availableRooms: listing.availableRooms || '',
       description: listing.description || '', tags: (listing.tags || []).join(', '),
       images: listing.images || [], lat: listing.lat || null, lng: listing.lng || null,
-      university: listing.university || '',
+      university: listing.university || '', genderPolicy: listing.genderPolicy || '',
     });
     if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null; markerRef.current = null; }
     setViewMode('manage'); window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -305,6 +305,11 @@ export default function ListingPage({ mode = 'board', darkMode = false, editList
                             <div className="listing-card-address">{l.address}</div>
                             {l.university && (
                               <div className="listing-university-badge">🎓 {l.university}</div>
+                            )}
+                            {l.genderPolicy && (
+                              <div className="listing-university-badge" style={{ marginTop: '4px' }}>
+                                {l.genderPolicy === 'Girls Only' ? '♀️' : l.genderPolicy === 'Boys Only' ? '♂️' : '⚥'} {l.genderPolicy}
+                              </div>
                             )}
                             <div className="listing-card-price">₱{l.price}</div>
                             <div className="listing-card-tags">
@@ -375,7 +380,15 @@ export default function ListingPage({ mode = 'board', darkMode = false, editList
 
                 <div className="form-row-2 form-mt">
                   <div>
-                    <input className="listing-input" value={form.rooms} onChange={setField('rooms')} placeholder="Room types" />
+                    <select className="listing-select" value={form.rooms} onChange={setField('rooms')}>
+                      <option value="">Room Type</option>
+                      <option value="Single Room">Single Room</option>
+                      <option value="Double Room">Double Room</option>
+                      <option value="Triple Room">Triple Room</option>
+                      <option value="Quad Room">Quad Room</option>
+                      <option value="Studio Room">Studio Room</option>
+                      <option value="Loft Room">Loft Room</option>
+                    </select>
                   </div>
                   <div>
                     <select className="listing-select" value={form.availableRooms} onChange={setField('availableRooms')}>
@@ -386,6 +399,27 @@ export default function ListingPage({ mode = 'board', darkMode = false, editList
                       <option value="4">4 Rooms</option>
                       <option value="5">5 Rooms</option>
                     </select>
+                  </div>
+                </div>
+
+                <div className="form-mt">
+                  <label className="listing-upload-label">Gender Policy</label>
+                  <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+                    {['Girls Only', 'Boys Only', 'Mixed'].map((g) => (
+                      <button
+                        key={g}
+                        type="button"
+                        onClick={() => setForm((f) => ({ ...f, genderPolicy: g }))}
+                        style={{
+                          flex: 1, padding: '10px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '13px',
+                          border: form.genderPolicy === g ? '2px solid #E8622E' : '1px solid #ddd',
+                          background: form.genderPolicy === g ? '#E8622E15' : '#fff',
+                          color: form.genderPolicy === g ? '#E8622E' : '#333',
+                        }}
+                      >
+                        {g}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
