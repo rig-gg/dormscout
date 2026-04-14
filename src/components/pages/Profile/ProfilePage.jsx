@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
 
-const PRIMARY   = '#E8622E';
-const SECONDARY = '#5BADA8';
+
 
 const COLORS = {
   light: {

@@ -5,6 +5,7 @@ import { useBooking } from '../../../context/BookingContext';
 import TenantManagement from '../../TenantManagement';
 import './ListingPage.css';
 
+// eslint-disable-next-line no-unused-vars
 const PRIMARY    = '#E8622E'; // still needed for Leaflet map click handler (not JSX)
 const BLUE       = '#2563EB';
 const STORAGE_KEY = 'dormscout_listings';
