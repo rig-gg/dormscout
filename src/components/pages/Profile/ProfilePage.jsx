@@ -234,7 +234,6 @@ export default function ProfilePage({ role, darkMode, setDarkMode }) {
         {/* ── Tenant Empty State ── */}
         {!isLandlord && (
           <div className="profile-empty" style={{ color: colors.secondaryText }}>
-            <p className="profile-empty__text">No additional content to display</p>
           </div>
         )}
       </div>
